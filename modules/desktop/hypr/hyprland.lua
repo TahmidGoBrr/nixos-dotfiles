@@ -143,12 +143,13 @@ hl.device({
 local mainMod = "SUPER"
 
 hl.bind(mainMod .. " + Z", hl.dsp.exec_cmd(terminal))
-hl.bind(mainMod .. " + C", hl.dsp.window.close())
 hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + X", hl.dsp.exec_cmd(menu))
 
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd(exithyprland))
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd(hyprlock))
+
+local windowclose = hl.bind(mainMod .. " + C", hl.dsp.window.close())
 
 hl.bind(mainMod .. " + D", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + W", hl.dsp.layout("togglesplit"))
