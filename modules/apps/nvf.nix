@@ -1,4 +1,7 @@
 {pkgs, ...}: {
+  environment.systemPackages = with pkgs; [
+    beamPackages.elixir
+  ];
   programs.nvf = {
     enable = true;
 
@@ -181,7 +184,6 @@
           # Functional & Modern Languages
           elixir = {
             enable = true;
-            package = pkgs.beamPackages.elixir;
           };
           go.enable = true;
 
