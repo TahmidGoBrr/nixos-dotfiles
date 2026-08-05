@@ -179,7 +179,10 @@
           scala.enable = true;
 
           # Functional & Modern Languages
-          elixir.enable = true;
+          elixir = {
+            enable = true;
+            package = pkgs.beamPackages.elixir;
+          };
           go.enable = true;
 
           # Config, Markup & Build Systems
