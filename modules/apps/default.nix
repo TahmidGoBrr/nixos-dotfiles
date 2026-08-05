@@ -18,7 +18,7 @@
     imports = [inputs.nixcord.homeModules.nixcord];
 
     home.packages = with pkgs; [
-      inputs.helium.packages.x86_64-linux.default # Browser
+      librewolf # Browser
       wezterm # Main terminal
       kdePackages.dolphin # File manager
       yazi # Terminal file manager

@@ -8,7 +8,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixcord.url = "github:FlameFlag/nixcord";
-    helium.url = "github:amaanq/helium-flake";
     nvf.url = "github:notashelf/nvf";
   };
 
