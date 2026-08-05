@@ -27,11 +27,6 @@ window#waybar {
   background-color: #1e1e2e;
 }
 
-#layout-indicator {
-  padding: 0 10px;
-  color: #89b4fa; /* Catppuccin Mocha Blue */
-}
-
 /* Grouping modules for padding */
 #window,
 #tray,

@@ -19,11 +19,6 @@
         "max-length": 50,
         "separate-outputs": true
     },
-    "custom/layout": {
-    "exec": "hyprctl getoption general:layout -j | jq -r '.str'",
-    "interval": 1,
-    "format": "󰕰 {}"
-    },
     "tray": {
         "spacing": 10
     },
