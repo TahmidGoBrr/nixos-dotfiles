@@ -147,7 +147,7 @@ hl.bind(mainMod .. " + A", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + X", hl.dsp.exec_cmd(menu))
 
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd(exithyprland))
-hl.bind(mainMod .. " + N", hl.dsp.exec_cmd(hyprlock))
+hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("hyprlock"))
 
 local windowclose = hl.bind(mainMod .. " + C", hl.dsp.window.close())
 
