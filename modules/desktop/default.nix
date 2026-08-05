@@ -1,0 +1,89 @@
+{pkgs, ...}: {
+  imports = [./theme.nix];
+
+  services.pipewire = {
+    enable = true;
+    pulse.enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    wireplumber.enable = true;
+  };
+  services.libinput = {
+    enable = true;
+    touchpad.naturalScrolling = true;
+  };
+  services.xserver = {
+    enable = true;
+    xkb = {
+      layout = "us";
+      variant = "";
+    };
+  };
+  services.displayManager.ly.enable = true;
+  services.dunst = {
+    enable = true;
+    settings = {
+      global = {
+        font = "Sans 10";
+        corner_radius = 0;
+        frame_width = 2;
+        frame_color = "#7aa2f7"; # Tokyo Night Blue
+      };
+      urgency_low = {
+        background = "#1a1b26";
+        foreground = "#c0caf5";
+        timeout = 5;
+      };
+      urgency_normal = {
+        background = "#1a1b26";
+        foreground = "#c0caf5";
+        timeout = 10;
+      };
+      urgency_critical = {
+        background = "#1a1b26";
+        foreground = "#f7768e"; # Tokyo Night Red
+        frame_color = "#f7768e";
+        timeout = 0;
+      };
+    };
+  };
+  programs.hyprland = {
+    enable = true;
+    withUWSM = true;
+    xwayland = {
+      enable = true;
+    };
+  };
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [pkgs.xdg-desktop-portal-gtk];
+    config.common.default = ["gtk"];
+  };
+
+  home-manager.users.tahmid = {pkgs, ...}: {
+    home.packages = with pkgs; [
+      rofi
+      waybar
+      hyprpaper
+      hyprshot
+      pamixer
+      pavucontrol
+      networkmanagerapplet
+    ];
+    home.pointerCursor = {
+      enable = true;
+      gtk.enable = true;
+      x11.enable = true;
+      package = pkgs.bibata-cursors;
+      name = "Bibata-Modern-Ice";
+      size = 24;
+    };
+    xdg.configFile."hypr/hyprland.lua".source = ./hypr/hyprland.lua;
+    xdg.configFile."hypr/hyprpaper.conf".source = ./hypr/hyprpaper.conf;
+    xdg.configFile."wezterm".source = ./wezterm;
+    xdg.configFile."waybar".source = ./waybar;
+    xdg.configFile."rofi".source = ./rofi;
+    home.file."wp.jpg".source = ./wp.jpg;
+  };
+}

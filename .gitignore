@@ -1,0 +1,11 @@
+# Nix build outputs
+result
+result-*
+
+# Editor temporary/swap files
+*.swp
+*~
+.swp
+
+# Secret state / environment overrides (if any)
+.env

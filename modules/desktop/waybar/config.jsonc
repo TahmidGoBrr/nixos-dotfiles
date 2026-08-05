@@ -1,0 +1,48 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 30,
+    "spacing": 4,
+
+    // Define the module positions
+    "modules-left": ["hyprland/workspaces", "layout/indicator"],
+    "modules-center": ["hyprland/window"],
+    "modules-right": ["tray", "pulseaudio", "network", "clock"],
+
+    // Module Specific Settings
+    "hyprland/workspaces": {
+        "format": "{name}",
+        "on-click": "activate"
+    },
+    "hyprland/window": {
+        "format": "{}",
+        "max-length": 50,
+        "separate-outputs": true
+    },
+    "custom/layout": {
+    "exec": "hyprctl getoption general:layout -j | jq -r '.str'",
+    "interval": 1,
+    "format": "󰕰 {}"
+    },
+    "tray": {
+        "spacing": 10
+    },
+    "pulseaudio": {
+        "format": "{volume}% {icon}",
+        "format-muted": "",
+        "format-icons": {
+            "default": ["", ""]
+        },
+        "on-click": "pavucontrol"
+    },
+    "network": {
+        "format-wifi": "{essid} ",
+        "format-ethernet": "Connected   ",
+        "format-disconnected": "Disconnected ⚠",
+    },
+    "clock": {
+        "format": "{:%H:%M}", // Date format
+        "tooltip-format": "<big>{:%d %B %Y}</big>\n<tt><small>{calendar}</small></tt>"
+    }
+}
+
