@@ -27,6 +27,7 @@
   services.gvfs.enable = true;
   services.libinput.enable = true;
 
+  security.pam.services.hyprlock = {};
   environment.systemPackages = with pkgs; [
     wget
     git
