@@ -54,31 +54,6 @@
       enable = true;
     };
   };
-  programs.hyprlock = {
-    enable = true;
-    settings = {
-      general = {
-        disable_loading_bar = true;
-        grace = 300;
-        hide_cursor = true;
-        no_fade_in = false;
-      };
-      background = [
-        {
-          path = "./wp.jpg";
-          blur_passes = 2;
-        }
-      ];
-      input-field = [
-        {
-          size = "200, 50";
-          position = "0, -20";
-          dots_center = true;
-          fade_on_empty = false;
-        }
-      ];
-    };
-  };
 
   xdg.portal = {
     enable = true;
@@ -104,6 +79,32 @@
       name = "Bibata-Modern-Ice";
       size = 24;
     };
+    programs.hyprlock = {
+      enable = true;
+      settings = {
+        general = {
+          disable_loading_bar = true;
+          grace = 300;
+          hide_cursor = true;
+          no_fade_in = false;
+        };
+        background = [
+          {
+            path = "./wp.jpg";
+            blur_passes = 2;
+          }
+        ];
+        input-field = [
+          {
+            size = "200, 50";
+            position = "0, -20";
+            dots_center = true;
+            fade_on_empty = false;
+          }
+        ];
+      };
+    };
+
     xdg.configFile."hypr/hyprland.lua".source = ./hypr/hyprland.lua;
     xdg.configFile."hypr/hyprpaper.conf".source = ./hypr/hyprpaper.conf;
     xdg.configFile."wezterm".source = ./wezterm;
