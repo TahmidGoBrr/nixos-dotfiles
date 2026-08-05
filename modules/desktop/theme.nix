@@ -1,16 +1,15 @@
 {pkgs, ...}: {
   # 1. Install theme packages system-wide with explicit Catppuccin variants
-  environment.systemPackages = [
-    (pkgs.catppuccin-gtk.override {
+  environment.systemPackages = with pkgs; [
+    (catppuccin-gtk.override {
       accents = ["blue"];
       size = "standard";
       variant = "mocha";
     })
-    pkgs.papirus-icon-theme
-    pkgs.bibata-cursors
-    pkgs.dconf
-    pkgs.kdePackages.qt6ct
-    pkgs.libsForQt5.qt5ct
+    papirus-icon-theme
+    dconf
+    kdePackages.qt6ct
+    libsForQt5.qt5ct
   ];
 
   # 2. Enable Dconf for GTK runtime settings

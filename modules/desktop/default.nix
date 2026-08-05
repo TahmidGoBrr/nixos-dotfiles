@@ -105,11 +105,25 @@
       };
     };
 
-    xdg.configFile."hypr/hyprland.lua".source = ./hypr/hyprland.lua;
-    xdg.configFile."hypr/hyprpaper.conf".source = ./hypr/hyprpaper.conf;
-    xdg.configFile."wezterm".source = ./wezterm;
-    xdg.configFile."waybar".source = ./waybar;
-    xdg.configFile."rofi".source = ./rofi;
+    xdg = {
+      configFile = {
+        "hypr/hyprland.lua".source = ./hypr/hyprland.lua;
+        "hypr/hyprpaper.conf".source = ./hypr/hyprpaper.conf;
+        "wezterm".source = ./wezterm;
+        "waybar".source = ./waybar;
+        "rofi".source = ./rofi;
+      };
+      desktopEntries = {
+        qt5ct = {
+          name = "Qt5 Settings";
+          noDisplay = true;
+        };
+        qt6ct = {
+          name = "Qt6 Settings";
+          noDisplay = true;
+        };
+      };
+    };
     home.file."wp.jpg".source = ./wp.jpg;
   };
 }
