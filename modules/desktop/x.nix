@@ -13,7 +13,6 @@
     feh # Lightweight image viewer / wallpaper setter
     maim # Screenshot utility
     slock # Simple suckless screen locker
-    brightnessctl # Backlight control
     kdePackages.polkit-kde-agent-1 # Authentication for apps
   ];
 

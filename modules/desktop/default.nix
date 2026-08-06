@@ -70,15 +70,8 @@
       pamixer
       pavucontrol
       networkmanagerapplet
+      brightnessctl
     ];
-    home.pointerCursor = {
-      enable = true;
-      gtk.enable = true;
-      x11.enable = true;
-      package = pkgs.bibata-cursors;
-      name = "Bibata-Modern-Ice";
-      size = 24;
-    };
     programs.hyprlock = {
       enable = true;
       settings = {
@@ -104,26 +97,5 @@
         ];
       };
     };
-
-    xdg = {
-      configFile = {
-        "hypr/hyprland.lua".source = ./hypr/hyprland.lua;
-        "hypr/hyprpaper.conf".source = ./hypr/hyprpaper.conf;
-        "wezterm".source = ./wezterm;
-        "waybar".source = ./waybar;
-        "rofi".source = ./rofi;
-      };
-      desktopEntries = {
-        qt5ct = {
-          name = "Qt5 Settings";
-          noDisplay = true;
-        };
-        qt6ct = {
-          name = "Qt6 Settings";
-          noDisplay = true;
-        };
-      };
-    };
-    home.file."wp.jpg".source = ./wp.jpg;
   };
 }

@@ -40,15 +40,14 @@
         betterFolders.enable = true;
         fakeNitro.enable = true;
         messageLogger.enable = true;
-        noTrack.enable = true;
         noTypingAnimation.enable = true;
-        clearURLs.enable = true;
+        clearUrls.enable = true;
         imageZoom.enable = true;
         fixCodeblockGap.enable = true;
         volumeBooster.enable = true;
         biggerStreamPreview.enable = true;
         betterSettings.enable = true;
-        pinDMs.enable = true;
+        pinDms.enable = true;
         platformIndicators.enable = true;
         memberCount.enable = true;
       };
