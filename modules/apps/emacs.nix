@@ -55,7 +55,7 @@
   home.packages = with pkgs; [
     alejandra # Nix formatter
     black # Python formatter
-    nodePackages.prettier # JS/TS formatter
+    prettier # JS/TS formatter
     beamPackages.elixir
     ripgrep # Fast search (Telescope/wgrep backend)
   ];
