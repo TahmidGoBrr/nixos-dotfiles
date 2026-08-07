@@ -1,4 +1,8 @@
 {pkgs, ...}: {
+  services.emacs = {
+    enable = true;
+    client.enable = true;
+  };
   # 1. Enable Emacs with dynamic package derivations built from ELPA/MELPA
   programs.emacs = {
     enable = true;

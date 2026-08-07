@@ -184,3 +184,20 @@
 
 (use-package wgrep              ; Search and replace across projects
   :ensure t)
+
+;; ==========================================
+;; Force Dashboard on Client Frame Creation
+;; ==========================================
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook)
+
+  ;; Ensure new client frames jump straight to the dashboard
+  (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
+
+  ;; Optional: Re-refresh dashboard layout when opening a new frame
+  (add-hook 'server-after-make-frame-hook
+            (lambda ()
+              (switch-to-buffer "*dashboard*")
+              (dashboard-refresh-buffer))))
