@@ -3,7 +3,7 @@
   pkgs,
   ...
 }: {
-  imports = [./nvf.nix ./virt.nix];
+  imports = [./nvf.nix ./virt.nix ./emacs.nix];
 
   networking = {
     networkmanager.enable = true;
