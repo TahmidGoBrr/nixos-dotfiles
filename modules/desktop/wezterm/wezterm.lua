@@ -154,4 +154,14 @@ wezterm.on("update-right-status", function(window, pane)
   window:set_right_status(wezterm.format(formatted))
 end)
 
+for i = 0, 9 do
+  table.insert(config.keys, {
+    key = tostring(i),
+    mods = "SUPER",
+    action = wezterm.action.Nop,
+  })
+end
+-- Prevents Wayland from sending raw escape codes for Super combinations
+config.enable_csi_u_key_encoding = true
+config.send_composed_key_when_right_alt_is_pressed = false
 return config

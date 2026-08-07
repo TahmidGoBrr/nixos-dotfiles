@@ -26,10 +26,7 @@
       motrix # Download manager
       btop # Task manager
       vlc # Audio & Video player
-      spotify # Spotify song player
-      nitch # Minimal fetch
-      fastfetch # Full-fledged fetch
-      cmatrix # Larp cli command
+      fastfetch # Fetch
     ];
 
     programs.nixcord = {

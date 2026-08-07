@@ -27,22 +27,22 @@
         font = "Sans 10";
         corner_radius = 0;
         frame_width = 2;
-        frame_color = "#7aa2f7"; # Tokyo Night Blue
+        frame_color = "#89b4fa"; # Catppuccin Mocha Blue
       };
       urgency_low = {
-        background = "#1a1b26";
-        foreground = "#c0caf5";
+        background = "#1e1e2e"; # Base
+        foreground = "#cdd6f4"; # Text
         timeout = 5;
       };
       urgency_normal = {
-        background = "#1a1b26";
-        foreground = "#c0caf5";
+        background = "#1e1e2e"; # Base
+        foreground = "#cdd6f4"; # Text
         timeout = 10;
       };
       urgency_critical = {
-        background = "#1a1b26";
-        foreground = "#f7768e"; # Tokyo Night Red
-        frame_color = "#f7768e";
+        background = "#1e1e2e"; # Base
+        foreground = "#f38ba8"; # Red
+        frame_color = "#f38ba8"; # Red
         timeout = 0;
       };
     };
@@ -50,9 +50,7 @@
   programs.hyprland = {
     enable = true;
     withUWSM = true;
-    xwayland = {
-      enable = true;
-    };
+    xwayland.enable = true;
   };
 
   xdg.portal = {
