@@ -8,7 +8,6 @@
   fonts = {
     packages = with pkgs; [
       nerd-fonts.iosevka
-      nerd-icons
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif

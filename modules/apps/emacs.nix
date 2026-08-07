@@ -9,6 +9,7 @@
         catppuccin-theme
         doom-modeline
         dashboard
+        nerd-icons
         rainbow-delimiters
         rainbow-mode
         highlight-indent-guides
