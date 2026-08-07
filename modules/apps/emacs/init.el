@@ -47,6 +47,57 @@
   :config (setq highlight-indent-guides-method 'character))
 
 ;; ==========================================
+;; Doom-Style Startup Screen & Keybinds
+;; ==========================================
+
+;; Suppress default startup message & toolbars for a clean look
+(setq inhibit-startup-message t
+      inhibit-startup-echo-area-message t)
+
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook)
+
+  ;; Define custom ASCII art of the Emacs logo
+  (setq dashboard-ascii-banner
+        '("         . - ~ - ."
+          "       /   /\\ /\\   \\"
+          "      /   /  V  \\   \\"
+          "     |   /   |   \\   |"
+          "     |  (   / \\   )  |"
+          "      \\  \\ (   ) /  /"
+          "       \\  \\_\\_/_/  /"
+          "         ` - ~ - '"))
+
+  (setq dashboard-startup-banner 'ascii)
+  (setq dashboard-banner-logo-title "G N U   E M A C S")
+  (setq dashboard-footer-messages '("Ready to hack."))
+
+  ;; Layout Settings (Doom style)
+  (setq dashboard-center-content t)
+  (setq dashboard-show-shortcuts t)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+
+  ;; Dashboard content sections
+  (setq dashboard-items '((recents   . 5)
+                          (projects  . 5)
+                          (bookmarks . 3)))
+
+  ;; On-screen Keybinding Quick Navigation Buttons
+  (setq dashboard-navigator-buttons
+        `(((;; Format: (Icon Title Subtitle Action Shortcut-Key)
+            "󰈔" "Find File" "  [C-x C-f]" (lambda (&rest _) (call-interactively 'find-file)))
+           ("󰋜" "Dotfiles"  "  [C-c e]  " (lambda (&rest _) (dired "~/.dotfiles")))
+           ("󰊢" "Magit"     "  [C-c g]  " (lambda (&rest _) (magit-status)))
+           ("󰈔" "Open Init" "  [C-c i]  " (lambda (&rest _) (find-file "~/.config/emacs/init.el")))))))
+
+;; Useful shortcut keybindings matching the dashboard
+(global-set-key (kbd "C-c i") (lambda () (interactive) (find-file "~/.config/emacs/init.el")))
+(global-set-key (kbd "C-c d") (lambda () (interactive) (dashboard-open))) ; Jump back to dashboard anytime
+
+;; ==========================================
 ;; 2. Native Keybindings & Helper Tools
 ;; ==========================================
 ;; Shows available keybindings as you type chords (e.g. C-x ...)

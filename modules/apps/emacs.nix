@@ -8,7 +8,7 @@
         use-package
         catppuccin-theme
         doom-modeline
-        nerd-icons
+        dashboard
         rainbow-delimiters
         rainbow-mode
         highlight-indent-guides
