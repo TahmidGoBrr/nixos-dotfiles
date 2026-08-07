@@ -51,7 +51,6 @@
         ]))
       ];
   };
-
   # 2. Add language tools/formatters to user environment (matching your NVF formatters)
   home.packages = with pkgs; [
     alejandra # Nix formatter
@@ -60,7 +59,11 @@
     beamPackages.elixir
     ripgrep # Fast search (Telescope/wgrep backend)
   ];
-
+  # 1. Hide the standard non-daemon Emacs app entry
+  xdg.desktopEntries.emacs = {
+    name = "Emacs";
+    noDisplay = true;
+  };
   # 3. Declaratively place init.el into target dotfile directory
   home.file.".config/emacs/init.el".source = ./emacs/init.el;
 }
