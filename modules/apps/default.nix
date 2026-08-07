@@ -3,7 +3,7 @@
   pkgs,
   ...
 }: {
-  imports = [./nvf.nix ./virt.nix ./emacs.nix];
+  imports = [./nvf.nix ./virt.nix];
 
   networking = {
     networkmanager.enable = true;
@@ -15,7 +15,7 @@
   };
 
   home-manager.users.tahmid = {
-    imports = [inputs.nixcord.homeModules.nixcord];
+    imports = [inputs.nixcord.homeModules.nixcord ./emacs.nix];
 
     home.packages = with pkgs; [
       librewolf # Browser
