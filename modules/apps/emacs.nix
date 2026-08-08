@@ -21,7 +21,7 @@
         evil-collection
         evil-surround
 
-        # UI Visuals & Themes
+        # Visual Studio Style UI, Breadcrumbs & Themes
         catppuccin-theme
         doom-modeline
         dashboard
@@ -29,8 +29,11 @@
         rainbow-delimiters
         rainbow-mode
         highlight-indent-guides
+        breadcrumb
+        symbols-outline
+        origami
 
-        # Completion & Navigation Stack (Telescope / Snacks.nvim equivalent)
+        # Completion & Navigation Stack (Telescope / Visual Studio Search)
         vertico
         marginalia
         orderless
@@ -42,17 +45,19 @@
         avy
         which-key
 
-        # File Tree & Buffer Management
+        # File Tree, Workspaces & Multi-cursor Editing
         bufler
         treemacs
         treemacs-evil
         treemacs-nerd-icons
+        multiple-cursors
 
-        # Terminal & Code Tools
+        # Terminal, Formatter & DAP Debugger (Visual Studio Debugger)
         vterm
         vterm-toggle
         project
         apheleia
+        dape # Debug Adapter Protocol for Emacs
 
         # Language Modes
         nix-mode
@@ -62,8 +67,9 @@
         zig-mode
         typst-ts-mode
 
-        # Git & Search Tools
+        # Git, Inline Blame & Search Tools
         magit
+        blamer
         diff-hl
         hl-todo
         wgrep
@@ -87,7 +93,7 @@
       ];
   };
 
-  # 3. Native system binaries, LSP servers, and code formatters
+  # 3. Native system binaries, LSP servers, Debuggers, and Code formatters
   home.packages = with pkgs; [
     # Searching & Terminal Compilation Backends
     ripgrep
@@ -106,11 +112,15 @@
     typescript-language-server # JS/TS LSP
     vscode-langservers-extracted # HTML/CSS/JSON LSP
 
+    # Debug Adapters (DAP Backends for Dape)
+    lldb # C/C++/Rust DAP Debugger
+    python3Packages.debugpy # Python DAP Debugger
+
     # Code Formatters (Backends for Apheleia)
     alejandra # Nix Formatter
     black # Python Formatter
     prettier # JS/TS/HTML/JSON Formatter
-    beamPackages.elixir
+    elixir
   ];
 
   # 4. Hide the default standalone launcher

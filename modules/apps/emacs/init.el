@@ -1,28 +1,15 @@
-;;; init.el --- Comprehensive Modern Emacs Configuration -*- lexical-binding: t; -*-
+;;; init.el --- Comprehensive Modern Emacs Config -*- lexical-binding: t; -*-
 
 ;; ==========================================
-;; 1. Core Engine Performance & GC Tuning
+;; 1. Core Performance & Engine Defaults
 ;; ==========================================
-;; Increase GC threshold during startup for instant boots
 (setq gc-cons-threshold (* 50 1024 1024)
       read-process-output-max (* 3 1024 1024))
 
-;; Restore GC threshold after init
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (setq gc-cons-threshold (* 16 1024 1024))))
-
-;; ==========================================
-;; 2. UI Visuals, Fonts & Ergonomics
-;; ==========================================
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-
-;; Ensure frame-creation parameters stay clean
-(add-to-list 'default-frame-alist '(scroll-bar-mode . nil))
-(add-to-list 'default-frame-alist '(tool-bar-lines . 0))
-(add-to-list 'default-frame-alist '(menu-bar-lines . 0))
+            (setq gc-cons-threshold (* 16 1024 1024)
+                  gc-cons-percentage 0.1)))
 
 (setq-default
  tab-width 2
@@ -41,153 +28,183 @@
 (setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
 (setq auto-save-file-name-transforms `((".*" ,(concat user-emacs-directory "auto-save/") t)))
 
+;; Native quality of life
+(save-place-mode 1)
+(winner-mode 1)
+(electric-pair-mode 1)
+(electric-indent-mode 1)
+(recentf-mode 1)
+
+;; ==========================================
+;; 2. UI Visuals & Font Settings
+;; ==========================================
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+
+(add-to-list 'default-frame-alist '(scroll-bar-mode . nil))
+(add-to-list 'default-frame-alist '(tool-bar-lines . 0))
+(add-to-list 'default-frame-alist '(menu-bar-lines . 0))
+
+;; Font Configuration (Smaller Font Size: 120 = 12pt)
+(set-face-attribute 'default nil :height 120)
+(set-face-attribute 'fixed-pitch nil :height 120)
+
 ;; Theme: Catppuccin Mocha
 (use-package catppuccin-theme
-  :ensure t
   :config
   (setq catppuccin-flavor 'mocha)
   (load-theme 'catppuccin t))
 
 (use-package doom-modeline
-  :ensure t
   :init (doom-modeline-mode 1)
   :config
-  (setq doom-modeline-height 28
+  (setq doom-modeline-height 24
         doom-modeline-bar-width 4
         doom-modeline-buffer-file-name-style 'relative-from-project))
 
-(use-package nerd-icons
-  :ensure t)
-
+(use-package nerd-icons)
 (use-package rainbow-delimiters
-  :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
-
 (use-package rainbow-mode
-  :ensure t
   :hook (prog-mode . rainbow-mode))
-
 (use-package highlight-indent-guides
-  :ensure t
   :hook (prog-mode . highlight-indent-guides-mode)
   :config
   (setq highlight-indent-guides-method 'character
         highlight-indent-guides-responsive 'top))
 
+;; Visual Studio Header Breadcrumbs
+(use-package breadcrumb
+  :init (breadcrumb-mode 1))
+
 ;; ==========================================
-;; 3. Dashboard Configuration
+;; 3. Dashboard (Matched to GitHub Screenshot)
 ;; ==========================================
+(use-package page-break-lines
+  :init (global-page-break-lines-mode 1))
+
 (use-package dashboard
-  :ensure t
   :config
-  (dashboard-setup-startup-hook)
+  ;; Use the official image logo shown in your reference image
+  (setq dashboard-startup-banner 'official)
+  
+  ;; Center the banner and text, match the exact wording
+  (setq dashboard-center-content t)
+  (setq dashboard-banner-logo-title "Welcome to Emacs!")
+  (setq dashboard-set-init-info t)
+  
+  ;; Configure sections: Projects first, then Recent files
+  (setq dashboard-items '((projects  . 10)
+                          (recents   . 10)))
+  
+  ;; Enable icons for headings and files
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
 
-  ;; Custom ASCII banner passing
-  (setq dashboard-startup-banner
-        '(1 "         . - ~ - ."
-            "       /   /\\ /\\   \\"
-            "      /   /  V  \\   \\"
-            "     |   /   |   \\   |"
-            "     |  (   / \\   )  |"
-            "      \\  \\ (   ) /  /"
-            "       \\  \\_\\_/_/  /"
-            "         ` - ~ - '"))
-
-  (setq dashboard-banner-logo-title "G N U   E M A C S"
-        dashboard-footer-messages '("Ready to conquer nvf.")
-        dashboard-center-content t
-        dashboard-show-shortcuts t
-        dashboard-set-heading-icons t
-        dashboard-set-file-icons t
-        dashboard-items '((recents   . 5)
-                          (projects  . 5)
-                          (bookmarks . 3)))
-
+  ;; Replicate the exact navigator buttons [Homepage] [Update] [Restart]
   (setq dashboard-navigator-buttons
-        `((( "󰈔" "Find File" "  [C-x C-f]" (lambda (&rest _) (call-interactively 'find-file)))
-           ( "󰋜" "Dotfiles"  "  [C-c e]  " (lambda (&rest _) (dired "~/.dotfiles")))
-           ( "󰊢" "Magit"     "  [C-c g]  " (lambda (&rest _) (magit-status)))
-           ( "󰈔" "Open Init" "  [C-c i]  " (lambda (&rest _) (find-file "~/.config/emacs/init.el")))))))
+        `((( "󰋜" "Homepage" " " (lambda (&rest _) (browse-url "https://www.gnu.org/software/emacs/")))
+           ( "󰚰" "Update"   " " (lambda (&rest _) (package-refresh-contents)))
+           ( "󰜉" "Restart"  " " (lambda (&rest _) (message "Run 'systemctl --user restart emacs' in your terminal."))))))
+
+  ;; Match the exact footer from the image
+  (setq dashboard-footer-messages '("Richard Stallman is proud of you"))
+  (setq dashboard-footer-icon (if (display-graphic-p)
+                                  (nerd-icons-faicon "nf-fa-gnu" :height 1.2 :v-adjust 0.0)
+                                nil))
+
+  (dashboard-setup-startup-hook))
 
 ;; ==========================================
-;; 4. Completion, Fuzzy Finding & Motion
+;; 4. Completion, Search & Multi-Cursor
 ;; ==========================================
-;; Vertical completion interface (Telescope / Snacks.nvim equivalent)
 (use-package vertico
-  :ensure t
   :init (vertico-mode 1))
 
-;; Rich annotations in completion buffer (file dates, permissions, descriptions)
 (use-package marginalia
-  :ensure t
   :init (marginalia-mode 1))
 
-;; Fuzzy matching algorithm
 (use-package orderless
-  :ensure t
   :custom
   (completion-styles '(orderless basic))
   (completion-category-defaults nil)
   (completion-category-overrides '((file (styles partial-completion)))))
 
-;; In-buffer auto-completion popup (blink-cmp / nvim-cmp equivalent)
 (use-package corfu
-  :ensure t
   :custom
   (corfu-auto t)
   (corfu-auto-delay 0.1)
   (corfu-auto-prefix 1)
   (corfu-cycle t)
   :init
-  (global-corfu-mode))
+  (global-corfu-mode)
+  (corfu-popupinfo-mode 1))
 
-;; Fast jump motions (flash.nvim / leap.nvim equivalent)
+(use-package savehist
+  :init (savehist-mode 1))
+
 (use-package avy
-  :ensure t
   :bind ("M-s" . avy-goto-char-timer))
 
-;; Keybinding hints popup (which-key)
 (use-package which-key
-  :ensure t
   :config (which-key-mode 1))
+
+(use-package consult
+  :bind (("C-x b" . consult-buffer)
+         ("M-y" . consult-yank-pop)
+         ("C-f" . consult-line)))
+
+(use-package multiple-cursors
+  :bind (("C-S-c C-S-c" . mc/edit-lines)
+         ("C->" . mc/mark-next-like-this)
+         ("C-<" . mc/mark-previous-like-this)
+         ("C-c C-<" . mc/mark-all-like-this)))
 
 ;; ==========================================
 ;; 5. LSP, Treesitter & Code Formatting
 ;; ==========================================
-;; Built-in lightweight LSP client
 (use-package eglot
-  :hook
-  ((python-ts-mode
-    rust-ts-mode
-    js-ts-mode
-    typescript-ts-mode
-    nix-mode
-    elixir-ts-mode
-    c-ts-mode
-    go-ts-mode) . eglot-ensure)
+  :hook ((python-ts-mode
+          rust-ts-mode
+          js-ts-mode
+          typescript-ts-mode
+          nix-mode
+          elixir-mode
+          c-ts-mode
+          go-ts-mode) . eglot-ensure)
   :config
   (setq eglot-autoshutdown t
         eglot-events-buffer-size 0))
 
-;; Universal asynchronous code formatter (Prettier, Alejandra, Black, etc.)
+(use-package symbols-outline
+  :bind ("C-c o" . symbols-outline-show)
+  :config
+  (symbols-outline-follow-mode 1))
+
+(use-package origami
+  :hook (prog-mode . origami-mode)
+  :bind ("C-c f" . origami-toggle-node))
+
 (use-package apheleia
-  :ensure t
   :config
   (setf (alist-get 'nix-mode apheleia-mode-alist) 'alejandra)
   (setf (alist-get 'python-ts-mode apheleia-mode-alist) 'black)
+  (setf (alist-get 'js-ts-mode apheleia-mode-alist) 'prettier)
+  (setf (alist-get 'typescript-ts-mode apheleia-mode-alist) 'prettier)
   (apheleia-global-mode +1))
 
-;; Modern inline LSP diagnostics/flymake visual tweaks
 (use-package flymake
-  :hook (prog-mode . flymake-mode))
+  :hook (prog-mode . flymake-mode)
+  :bind ("C-c n" . flymake-goto-next-error))
 
-;; Language modes
-(use-package nix-mode :ensure t)
-(use-package markdown-mode :ensure t)
-(use-package typst-ts-mode :ensure t)
-(use-package elixir-mode :ensure t)
-(use-package rust-mode :ensure t)
-(use-package zig-mode :ensure t)
+;; Language Modes
+(use-package nix-mode)
+(use-package markdown-mode)
+(use-package typst-ts-mode)
+(use-package elixir-mode)
+(use-package rust-mode)
+(use-package zig-mode)
 
 ;; Fill Column Indicators
 (add-hook 'nix-mode-hook (lambda () (setq display-fill-column-indicator-column 110) (display-fill-column-indicator-mode 1)))
@@ -195,56 +212,77 @@
 (add-hook 'typescript-ts-mode-hook (lambda () (setq display-fill-column-indicator-column 100) (display-fill-column-indicator-mode 1)))
 
 ;; ==========================================
-;; 6. Navigation, Git & Utility Bloat
+;; 6. Visual Studio DAP Debugger Engine
 ;; ==========================================
-;; The undisputed king of Git interfaces (far superior to Lazygit)
-(use-package magit
-  :ensure t)
+(use-package dape
+  :bind (("<f5>" . dape)
+         ("<f9>" . dape-breakpoint-toggle)
+         ("<f10>" . dape-next)
+         ("<f11>" . dape-step-in)
+         ("S-<f11>" . dape-step-out))
+  :config
+  (setq dape-buffer-window-arrangement 'right)
+  (add-hook 'dape-on-start-hooks 'save-some-buffers))
 
-;; In-buffer Git diff indicators (gitsigns.nvim equivalent)
+;; ==========================================
+;; 7. File Tree, Terminal & Git Integration
+;; ==========================================
+(use-package treemacs
+  :bind ("<f8>" . treemacs)
+  :config
+  (setq treemacs-width 30
+        treemacs-is-never-other-window t))
+
+(use-package treemacs-nerd-icons
+  :config
+  (treemacs-load-theme "nerd-icons"))
+
+(use-package magit)
+
+(use-package blamer
+  :bind ("C-c b" . blamer-show-commit-info)
+  :custom
+  (blamer-idle-time 0.5)
+  (blamer-min-offset 30)
+  :custom-face
+  (blamer-face ((t :foreground "#7f849c" :background nil :italic t))))
+
 (use-package diff-hl
-  :ensure t
-  :init
-  (global-diff-hl-mode)
+  :init (global-diff-hl-mode)
   :hook (magit-post-refresh . diff-hl-magit-post-refresh))
 
-;; Highlighting todo comments
 (use-package hl-todo
-  :ensure t
   :init (global-hl-todo-mode))
 
-;; Editable search-and-replace across entire project
-(use-package wgrep
-  :ensure t)
-
-;; Project management
+(use-package wgrep)
 (use-package project
   :bind ("C-c p f" . project-find-file))
 
-;; Native terminal toggle inside Emacs (toggleterm equivalent)
-(use-package vterm
-  :ensure t
-  :bind ("C-c t" . vterm-toggle)
-  :config
-  (setq vterm-max-scrollback 10000))
+(use-package vterm)
+(use-package vterm-toggle
+  :bind ("C-c t" . vterm-toggle))
 
-;; Window Navigation via Shift + Arrow keys
 (use-package windmove
-  :config
-  (windmove-default-keybindings 'shift))
+  :config (windmove-default-keybindings 'shift))
 
-;; Basic Global Shortcuts
+;; ==========================================
+;; 8. Core Native Keybindings
+;; ==========================================
 (global-set-key (kbd "C-s") 'save-buffer)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-c g") 'magit-status)
 (global-set-key (kbd "C-c e") 'dired-jump)
 
 ;; ==========================================
-;; 7. Client/Daemon Frame Creation Fixes
+;; 9. Daemon Frame Creation Fixes
 ;; ==========================================
 (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
 
 (add-hook 'server-after-make-frame-hook
           (lambda ()
-            (switch-to-buffer "*dashboard*")
-            (dashboard-refresh-buffer)))
+            (with-current-buffer (get-buffer-create "*dashboard*")
+              (dashboard-refresh-buffer))
+            (switch-to-buffer "*dashboard*")))
+
+(provide 'init)
+;;; init.el ends here
