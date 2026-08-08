@@ -46,7 +46,7 @@
 (add-to-list 'default-frame-alist '(tool-bar-lines . 0))
 (add-to-list 'default-frame-alist '(menu-bar-lines . 0))
 
-;; Font Configuration (Smaller Font Size: 120 = 12pt)
+;; Font Configuration (Standard Size)
 (set-face-attribute 'default nil :height 120)
 (set-face-attribute 'fixed-pitch nil :height 120)
 
@@ -56,6 +56,7 @@
   (setq catppuccin-flavor 'mocha)
   (load-theme 'catppuccin t))
 
+;; Modeline (Matches the minimal bottom bar in the screenshot)
 (use-package doom-modeline
   :init (doom-modeline-mode 1)
   :config
@@ -79,40 +80,32 @@
   :init (breadcrumb-mode 1))
 
 ;; ==========================================
-;; 3. Dashboard (Matched to GitHub Screenshot)
+;; 3. Dashboard (Matched exactly to image_ae2f98.png)
 ;; ==========================================
-(use-package page-break-lines
-  :init (global-page-break-lines-mode 1))
-
 (use-package dashboard
   :config
-  ;; Use the official image logo shown in your reference image
-  (setq dashboard-startup-banner 'official)
+  ;; Use the alternative stylized logo from the GitHub repo showcase
+  (setq dashboard-startup-banner 'logo)
   
-  ;; Center the banner and text, match the exact wording
+  ;; Center everything as shown in the screenshot
   (setq dashboard-center-content t)
+  
+  ;; Exact text from the screenshot
   (setq dashboard-banner-logo-title "Welcome to Emacs!")
   (setq dashboard-set-init-info t)
   
-  ;; Configure sections: Projects first, then Recent files
-  (setq dashboard-items '((projects  . 10)
-                          (recents   . 10)))
+  ;; Only Projects and Recent Files are shown in the screenshot
+  (setq dashboard-items '((projects  . 5)
+                          (recents   . 5)))
   
-  ;; Enable icons for headings and files
-  (setq dashboard-set-heading-icons t)
-  (setq dashboard-set-file-icons t)
+  ;; Disable all extra icons and navigator buttons to match the minimal look
+  (setq dashboard-set-heading-icons nil)
+  (setq dashboard-set-file-icons nil)
+  (setq dashboard-navigator-buttons nil)
 
-  ;; Replicate the exact navigator buttons [Homepage] [Update] [Restart]
-  (setq dashboard-navigator-buttons
-        `((( "󰋜" "Homepage" " " (lambda (&rest _) (browse-url "https://www.gnu.org/software/emacs/")))
-           ( "󰚰" "Update"   " " (lambda (&rest _) (package-refresh-contents)))
-           ( "󰜉" "Restart"  " " (lambda (&rest _) (message "Run 'systemctl --user restart emacs' in your terminal."))))))
-
-  ;; Match the exact footer from the image
+  ;; Exact footer text with no icon
   (setq dashboard-footer-messages '("Richard Stallman is proud of you"))
-  (setq dashboard-footer-icon (if (display-graphic-p)
-                                  (nerd-icons-faicon "nf-fa-gnu" :height 1.2 :v-adjust 0.0)
-                                nil))
+  (setq dashboard-footer-icon nil)
 
   (dashboard-setup-startup-hook))
 
