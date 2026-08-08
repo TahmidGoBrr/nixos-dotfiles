@@ -1,15 +1,27 @@
 {pkgs, ...}: {
+  # 1. Enable background Emacs user service
   services.emacs = {
     enable = true;
     client.enable = true;
   };
-  # 1. Enable Emacs with dynamic package derivations built from ELPA/MELPA
+
+  # 2. Main Emacs package declaration with native compilation & dynamic packages
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs-pgtk; # Native compilation + modern GTK GUI
+    package = pkgs.emacs-pgtk; # Native compilation + modern GTK/Wayland GUI
     extraPackages = epkgs:
       with epkgs; [
+        # Core & Macro Frameworks
         use-package
+        general
+        diminish
+
+        # Evil / Vim Emulation
+        evil
+        evil-collection
+        evil-surround
+
+        # UI Visuals & Themes
         catppuccin-theme
         doom-modeline
         dashboard
@@ -17,27 +29,46 @@
         rainbow-delimiters
         rainbow-mode
         highlight-indent-guides
-        evil
-        evil-collection
-        evil-surround
-        which-key
-        general
+
+        # Completion & Navigation Stack (Telescope / Snacks.nvim equivalent)
         vertico
+        marginalia
         orderless
         corfu
+        consult
+        consult-dir
+        embark
+        embark-consult
         avy
+        which-key
+
+        # File Tree & Buffer Management
+        bufler
+        treemacs
+        treemacs-evil
+        treemacs-nerd-icons
+
+        # Terminal & Code Tools
+        vterm
+        vterm-toggle
+        project
         apheleia
+
+        # Language Modes
         nix-mode
         markdown-mode
         elixir-mode
         rust-mode
         zig-mode
+        typst-ts-mode
+
+        # Git & Search Tools
         magit
         diff-hl
         hl-todo
         wgrep
 
-        # Treesitter grammars
+        # Treesitter Grammars
         (treesit-grammars.with-grammars (p: [
           p.tree-sitter-bash
           p.tree-sitter-c
@@ -55,19 +86,39 @@
         ]))
       ];
   };
-  # 2. Add language tools/formatters to user environment (matching your NVF formatters)
+
+  # 3. Native system binaries, LSP servers, and code formatters
   home.packages = with pkgs; [
-    alejandra # Nix formatter
-    black # Python formatter
-    prettier # JS/TS formatter
+    # Searching & Terminal Compilation Backends
+    ripgrep
+    fd
+    libvterm
+    cmake
+    gnumake
+    gcc
+    zstd
+
+    # Language Servers (LSP Backends for Eglot)
+    nil # Nix LSP
+    pyright # Python LSP
+    rust-analyzer # Rust LSP
+    gopls # Go LSP
+    typescript-language-server # JS/TS LSP
+    vscode-langservers-extracted # HTML/CSS/JSON LSP
+
+    # Code Formatters (Backends for Apheleia)
+    alejandra # Nix Formatter
+    black # Python Formatter
+    prettier # JS/TS/HTML/JSON Formatter
     beamPackages.elixir
-    ripgrep # Fast search (Telescope/wgrep backend)
   ];
-  # 1. Hide the standard non-daemon Emacs app entry
+
+  # 4. Hide the default standalone launcher
   xdg.desktopEntries.emacs = {
     name = "Emacs";
     noDisplay = true;
   };
-  # 3. Declaratively place init.el into target dotfile directory
+
+  # 5. Symlink init.el configuration file
   home.file.".config/emacs/init.el".source = ./emacs/init.el;
 }
