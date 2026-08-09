@@ -1,7 +1,7 @@
 ;;; init.el --- The Ultimate IDE Zenith Config -*- lexical-binding: t; -*-
 
 ;; ==========================================
-;; 1. Core Engine Performance & File Handling
+;; 1. Core Engine Performance, Modifiers & File Handling
 ;; ==========================================
 (setq gc-cons-threshold most-positive-fixnum
       read-process-output-max (* 1024 1024 200))
@@ -10,6 +10,10 @@
           (lambda ()
             (setq gc-cons-threshold (* 1024 1024 500)
                   gc-cons-percentage 0.9)))
+
+;; Map Alt key to Meta explicitly (Leaves Super/Mod4 for Hyprland/WM)
+(setq x-alt-keysym 'meta)
+(setq x-meta-keysym 'alt)
 
 (setq-default tab-width 2 indent-tabs-mode nil word-wrap nil)
 (setq display-line-numbers-type 'relative inhibit-startup-screen t inhibit-startup-message t)
@@ -22,6 +26,9 @@
 (electric-indent-mode 1)
 (recentf-mode 1)
 (global-auto-revert-mode 1)
+
+;; Global Syntax Highlighting / Font-Lock
+(global-font-lock-mode 1)
 
 ;; Load large files (GB+) without freezing using VLF
 (require 'vlf-setup)
@@ -75,7 +82,6 @@
 (use-package prodigy
   :bind ("C-c y" . prodigy)
   :config
-  ;; Example: Add a background service to your IDE
   (prodigy-define-service
     :name "Local Dev Server"
     :command "npm"
@@ -102,7 +108,7 @@
   :commands (crdt-share-buffer crdt-connect))
 
 ;; ==========================================
-;; 4. Evil Mode, Completion & LSP Core
+;; 4. Evil Mode, Completion, LSP, Icons & Tree-sitter
 ;; ==========================================
 (use-package evil :init (setq evil-want-integration t evil-undo-system 'undo-tree) :config (evil-mode 1))
 (use-package evil-collection :after evil :config (evil-collection-init))
@@ -112,10 +118,78 @@
 (use-package marginalia :init (marginalia-mode 1))
 (use-package corfu :init (global-corfu-mode) :custom (corfu-auto t))
 (use-package projectile :init (projectile-mode +1))
-(use-package treemacs :bind ("<f8>" . treemacs))
+
+;; Treemacs & Nerd Icons Theme
+(use-package treemacs
+  :bind ("<f8>" . treemacs))
+
+(use-package treemacs-nerd-icons
+  :after (treemacs nerd-icons)
+  :config
+  (treemacs-load-theme "nerd-icons"))
+
+;; Safe, Direct Tree-sitter Language Remapping (Prevents Freezes)
+(setq major-mode-remap-alist
+      '((bash-mode       . bash-ts-mode)
+        (c-mode          . c-ts-mode)
+        (c++-mode        . c++-ts-mode)
+        (csharp-mode     . csharp-ts-mode)
+        (css-mode        . css-ts-mode)
+        (dockerfile-mode . dockerfile-ts-mode)
+        (elixir-mode     . elixir-ts-mode)
+        (go-mode         . go-ts-mode)
+        (html-mode       . html-ts-mode)
+        (java-mode       . java-ts-mode)
+        (js-mode         . js-ts-mode)
+        (json-mode       . json-ts-mode)
+        (lua-mode        . lua-ts-mode)
+        (python-mode     . python-ts-mode)
+        (ruby-mode       . ruby-ts-mode)
+        (rust-mode       . rust-ts-mode)
+        (sh-mode         . bash-ts-mode)
+        (typescript-mode . typescript-ts-mode)
+        (yaml-mode       . yaml-ts-mode)))
+
+;; Direct File Extension Associations
+(add-to-list 'auto-mode-alist '("\\.lua\\'" . lua-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.json\\'" . json-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.yaml\\|\\.yml\\'" . yaml-ts-mode))
+(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.py\\'" . python-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.ex\\|\\.exs\\'" . elixir-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.typ\\'" . typst-ts-mode))
+
+;; Async Format-On-Save (NVF Parity via Apheleia)
+(use-package apheleia
+  :config
+  (apheleia-global-mode +1)
+  (setf (alist-get 'alejandra apheleia-formatters) '("alejandra" "-"))
+  (setf (alist-get 'nix-mode apheleia-mode-alist) 'alejandra)
+  (setf (alist-get 'nix-ts-mode apheleia-mode-alist) 'alejandra)
+  (setf (alist-get 'python-mode apheleia-mode-alist) 'black)
+  (setf (alist-get 'python-ts-mode apheleia-mode-alist) 'black)
+  (setf (alist-get 'typescript-mode apheleia-mode-alist) 'prettier-typescript)
+  (setf (alist-get 'typescript-ts-mode apheleia-mode-alist) 'prettier-typescript)
+  (setf (alist-get 'tsx-ts-mode apheleia-mode-alist) 'prettier-typescript)
+  (setf (alist-get 'js-mode apheleia-mode-alist) 'prettier-javascript)
+  (setf (alist-get 'js-ts-mode apheleia-mode-alist) 'prettier-javascript)
+  (setf (alist-get 'json-mode apheleia-mode-alist) 'prettier-json)
+  (setf (alist-get 'json-ts-mode apheleia-mode-alist) 'prettier-json)
+  (setf (alist-get 'css-mode apheleia-mode-alist) 'prettier-css)
+  (setf (alist-get 'css-ts-mode apheleia-mode-alist) 'prettier-css)
+  (setf (alist-get 'html-mode apheleia-mode-alist) 'prettier-html)
+  (setf (alist-get 'html-ts-mode apheleia-mode-alist) 'prettier-html)
+  (setf (alist-get 'yaml-mode apheleia-mode-alist) 'prettier-yaml)
+  (setf (alist-get 'yaml-ts-mode apheleia-mode-alist) 'prettier-yaml)
+  (setf (alist-get 'bash-ts-mode apheleia-mode-alist) 'shfmt)
+  (setf (alist-get 'sh-mode apheleia-mode-alist) 'shfmt))
 
 (use-package eglot :hook ((prog-mode . eglot-ensure)))
-(use-package apheleia :config (apheleia-global-mode +1))
 (use-package dape :bind ("<f5>" . dape))
 (use-package magit)
 (use-package vterm)

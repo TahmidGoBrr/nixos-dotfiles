@@ -57,7 +57,7 @@
         mixed-pitch
         telephone-line
         nyan-mode
-        minimap # The classic IDE code minimap on the side
+        minimap
 
         # Completion, Search, Navigation & Action Menu
         vertico
@@ -121,6 +121,15 @@
         crux
         string-inflection
 
+        # Major Language Modes
+        lua-mode
+        nix-mode
+        yaml-mode
+        markdown-mode
+        rust-mode
+        go-mode
+        typescript-mode
+
         # Developer Docs, Notes & AI Code Assistance
         pdf-tools
         gptel
@@ -128,26 +137,26 @@
         ellama
         aider
         devdocs
-        zeal-at-point # Offline API documentation
+        zeal-at-point
         org-roam
-        org-roam-ui # Developer knowledge base
+        org-roam-ui
 
-        # Advanced IDE Features (The "Never Use But Have" Suite)
+        # Advanced IDE Features
         restclient
-        verb # Postman/Insomnia replacements
+        verb
         docker
-        dockerfile-mode # Docker container & image management
+        dockerfile-mode
         kubernetes
-        k8s-mode # K8s cluster management inside Emacs
-        prodigy # Local microservice & background job runner
-        vlf # Very Large File support (for massive logs)
-        nhexl-mode # Advanced Hex editing for binaries
-        crdt # Real-time collaborative editing (like VS Live Share)
+        k8s-mode
+        prodigy
+        vlf
+        nhexl-mode
+        crdt
         direnv
-        envrc # Auto-load local environment variables per project
+        envrc
         ejc-sql
-        edbi # Native Database connections (Postgres/MySQL)
-        just-mode # Support for 'just' command runners
+        edbi
+        just-mode
 
         # Git Integration
         magit
@@ -197,8 +206,15 @@
       ];
   };
 
-  # Complete Developer System Binaries
+  # Complete Developer System Binaries & Formatters
   home.packages = with pkgs; [
+    # Formatters (NVF Parity)
+    alejandra
+    black
+    prettier
+    shfmt
+
+    # Compilers, Tools & LSPs
     beamPackages.elixir
     ripgrep
     fd
@@ -222,31 +238,28 @@
     python3Packages.debugpy
     terraform-ls
     nodejs
-    alejandra
-    black
-    prettier
-    elixir
 
     ollama
     sqlite
     poppler_gi
-    ghostscript # AI, DBs, PDFs
+    ghostscript
 
     # Advanced IDE External Dependencies
     docker
     kubectl
-    k9s # Container & Cluster CLIs
+    k9s
     direnv
-    just # Env and build tools
-    zeal # Offline docset browser backend
+    just
+    zeal
     pgcli
-    mycli # Database terminal tools
+    mycli
   ];
+
   xdg.desktopEntries.emacs = {
     name = "Emacs";
     noDisplay = true;
   };
 
-  # 5. Symlink init.el configuration file
+  # Symlink init.el configuration file
   xdg.configFile."emacs/init.el".source = ./emacs/init.el;
 }
