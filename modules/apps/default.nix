@@ -20,7 +20,7 @@
   home-manager.users.tahmid = {
     imports = [
       inputs.nixcord.homeModules.nixcord
-      ./emacs.nix
+      ./doom.nix
     ];
 
     home.packages = with pkgs; [
@@ -57,4 +57,4 @@
     };
   };
 }
-  
+
