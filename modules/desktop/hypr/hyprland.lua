@@ -13,6 +13,8 @@ local exithyprland = (os.execute("command -v hyprshutdown >/dev/null 2>&1") == 0
 
 hl.on("hyprland.start", function()
   hl.exec_cmd("hyprpaper & waybar")
+  hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
+  hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP")
 end)
 
 hl.env("XCURSOR_SIZE", "24")

@@ -5,8 +5,8 @@
        (vertico +icons)     ; Fuzzy searching & action menus
 
        :ui
-       doom-dashboard       ; Dashboard on launch
-       doom-modeline        ; Modeline
+       dashboard       ; Dashboard on launch
+       modeline        ; Modeline
        doom-entangles
        hl-todo              ; Highlight TODO, FIXME, etc.
        indent-guides        ; Indent guides

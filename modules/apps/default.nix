@@ -18,11 +18,6 @@
   };
 
   home-manager.users.tahmid = {
-    imports = [
-      inputs.nixcord.homeModules.nixcord
-      ./doom.nix
-    ];
-
     home.packages = with pkgs; [
       librewolf # Browser
       wezterm # Main terminal
@@ -57,4 +52,3 @@
     };
   };
 }
-

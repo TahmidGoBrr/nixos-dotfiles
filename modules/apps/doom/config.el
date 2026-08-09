@@ -3,8 +3,12 @@
 ;; ==========================================
 ;; 1. Visuals & Theme
 ;; ==========================================
-(setq doom-theme 'catppuccin
-      catppuccin-flavor 'mocha)
+(use-package! catppuccin-theme
+  :init
+  (setq catppuccin-flavor 'mocha)
+  (setq doom-theme 'catppuccin)
+  :config
+  (load-theme 'catppuccin t))
 
 (setq display-line-numbers-type 'relative)
 (setq-default tab-width 2)

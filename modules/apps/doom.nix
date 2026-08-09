@@ -1,21 +1,29 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
+  # Enable Systemd Daemon for Emacs Client/Daemon mode
   services.emacs = {
     enable = true;
     client.enable = true;
+    defaultEditor = true;
+    startWithUserSession = "graphical";
   };
-
-  programs.emacs = {
+  # Declarative, Reproducible Doom Emacs
+  programs.doom-emacs = {
     enable = true;
-    package = pkgs.emacs-pgtk;
+    doomDir = ./doom; # Points to your local doom/ directory containing init.el, config.el, packages.el
+    emacs = pkgs.emacs-pgtk;
   };
 
-  # System Binaries, Fonts, Formatters & LSPs
+  # Complete Developer System Binaries & Formatters
   home.packages = with pkgs; [
     # System Fonts
     nerd-fonts.symbols-only
     nerd-fonts.iosevka
 
-    # Formatters (NVF Parity)
+    # Formatters
     alejandra
     black
     prettier
@@ -31,12 +39,13 @@
     gcc
     zstd
     jq
+    wget
     unzip
     lldb
     nodejs
     sqlite
 
-    # Language Servers for Eglot/Doom LSP
+    # Language Servers
     nil
     pyright
     rust-analyzer
@@ -51,7 +60,4 @@
     name = "Emacs";
     noDisplay = true;
   };
-
-  # Symlink Doom configuration folder
-  xdg.configFile."doom".source = ./doom;
 }
