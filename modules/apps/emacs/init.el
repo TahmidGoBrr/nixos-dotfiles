@@ -1,274 +1,138 @@
-;;; init.el --- Comprehensive Modern Emacs Config -*- lexical-binding: t; -*-
+;;; init.el --- The Ultimate IDE Zenith Config -*- lexical-binding: t; -*-
 
 ;; ==========================================
-;; 1. Core Performance & Engine Defaults
+;; 1. Core Engine Performance & File Handling
 ;; ==========================================
-(setq gc-cons-threshold (* 50 1024 1024)
-      read-process-output-max (* 3 1024 1024))
+(setq gc-cons-threshold most-positive-fixnum
+      read-process-output-max (* 1024 1024 200))
 
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (setq gc-cons-threshold (* 16 1024 1024)
-                  gc-cons-percentage 0.1)))
+            (setq gc-cons-threshold (* 1024 1024 500)
+                  gc-cons-percentage 0.9)))
 
-(setq-default
- tab-width 2
- indent-tabs-mode nil
- word-wrap nil)
+(setq-default tab-width 2 indent-tabs-mode nil word-wrap nil)
+(setq display-line-numbers-type 'relative inhibit-startup-screen t inhibit-startup-message t)
 
-(setq display-line-numbers-type 'relative)
 (global-display-line-numbers-mode t)
 (global-hl-line-mode t)
-(setq scroll-margin 8
-      select-enable-clipboard t
-      inhibit-startup-screen t
-      inhibit-startup-message t)
-
-;; Backup & Auto-Save directories
-(setq backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
-(setq auto-save-file-name-transforms `((".*" ,(concat user-emacs-directory "auto-save/") t)))
-
-;; Native quality of life
 (save-place-mode 1)
 (winner-mode 1)
 (electric-pair-mode 1)
 (electric-indent-mode 1)
 (recentf-mode 1)
+(global-auto-revert-mode 1)
+
+;; Load large files (GB+) without freezing using VLF
+(require 'vlf-setup)
+(custom-set-variables '(vlf-application 'always))
 
 ;; ==========================================
-;; 2. UI Visuals & Font Settings
+;; 2. Visual Overhaul, Minimap & UI
 ;; ==========================================
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-
-(add-to-list 'default-frame-alist '(scroll-bar-mode . nil))
-(add-to-list 'default-frame-alist '(tool-bar-lines . 0))
-(add-to-list 'default-frame-alist '(menu-bar-lines . 0))
-
-;; Font Configuration (Standard Size)
+(menu-bar-mode -1) (tool-bar-mode -1) (scroll-bar-mode -1)
 (set-face-attribute 'default nil :height 120)
-(set-face-attribute 'fixed-pitch nil :height 120)
 
-;; Theme: Catppuccin Mocha
-(use-package catppuccin-theme
+(use-package catppuccin-theme :config (load-theme 'catppuccin t))
+(use-package doom-modeline :init (doom-modeline-mode 1))
+(use-package centaur-tabs :demand :config (centaur-tabs-mode t))
+
+;; The classic IDE Minimap (toggle with C-c m)
+(use-package minimap
+  :bind ("C-c m" . minimap-mode)
   :config
-  (setq catppuccin-flavor 'mocha)
-  (load-theme 'catppuccin t))
+  (setq minimap-window-location 'right
+        minimap-update-delay 0.2
+        minimap-minimum-width 20))
 
-;; Modeline (Matches the minimal bottom bar in the screenshot)
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :config
-  (setq doom-modeline-height 24
-        doom-modeline-bar-width 4
-        doom-modeline-buffer-file-name-style 'relative-from-project))
-
-(use-package nerd-icons)
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
-(use-package rainbow-mode
-  :hook (prog-mode . rainbow-mode))
-(use-package highlight-indent-guides
-  :hook (prog-mode . highlight-indent-guides-mode)
-  :config
-  (setq highlight-indent-guides-method 'character
-        highlight-indent-guides-responsive 'top))
-
-;; Visual Studio Header Breadcrumbs
-(use-package breadcrumb
-  :init (breadcrumb-mode 1))
-
-;; ==========================================
-;; 3. Dashboard (Matched exactly to image_ae2f98.png)
-;; ==========================================
 (use-package dashboard
   :config
-  ;; Use the alternative stylized logo from the GitHub repo showcase
-  (setq dashboard-startup-banner 'logo)
-  
-  ;; Center everything as shown in the screenshot
-  (setq dashboard-center-content t)
-  
-  ;; Exact text from the screenshot
-  (setq dashboard-banner-logo-title "Welcome to Emacs!")
-  (setq dashboard-set-init-info t)
-  
-  ;; Only Projects and Recent Files are shown in the screenshot
-  (setq dashboard-items '((projects  . 5)
-                          (recents   . 5)))
-  
-  ;; Disable all extra icons and navigator buttons to match the minimal look
-  (setq dashboard-set-heading-icons nil)
-  (setq dashboard-set-file-icons nil)
-  (setq dashboard-navigator-buttons nil)
-
-  ;; Exact footer text with no icon
-  (setq dashboard-footer-messages '("Richard Stallman is proud of you"))
-  (setq dashboard-footer-icon nil)
-
+  (setq dashboard-startup-banner 'logo
+        dashboard-center-content t
+        dashboard-banner-logo-title "Welcome to GNU Emacs."
+        dashboard-items '((projects . 5) (recents . 5) (bookmarks . 5)))
   (dashboard-setup-startup-hook))
 
 ;; ==========================================
-;; 4. Completion, Search & Multi-Cursor
+;; 3. Advanced Developer Tools & Containers
 ;; ==========================================
-(use-package vertico
-  :init (vertico-mode 1))
 
-(use-package marginalia
-  :init (marginalia-mode 1))
+;; Environment variables auto-loader
+(use-package envrc
+  :init (envrc-global-mode))
 
-(use-package orderless
-  :custom
-  (completion-styles '(orderless basic))
-  (completion-category-defaults nil)
-  (completion-category-overrides '((file (styles partial-completion)))))
+;; Docker & Kubernetes Managers
+(use-package docker
+  :bind ("C-c d" . docker))
+(use-package kubernetes
+  :commands (kubernetes-overview))
 
-(use-package corfu
-  :custom
-  (corfu-auto t)
-  (corfu-auto-delay 0.1)
-  (corfu-auto-prefix 1)
-  (corfu-cycle t)
-  :init
-  (global-corfu-mode)
-  (corfu-popupinfo-mode 1))
+;; Postman Alternative (API Testing via HTTP files)
+(use-package restclient
+  :mode ("\\.http\\'" . restclient-mode))
 
-(use-package savehist
-  :init (savehist-mode 1))
-
-(use-package avy
-  :bind ("M-s" . avy-goto-char-timer))
-
-(use-package which-key
-  :config (which-key-mode 1))
-
-(use-package consult
-  :bind (("C-x b" . consult-buffer)
-         ("M-y" . consult-yank-pop)
-         ("C-f" . consult-line)))
-
-(use-package multiple-cursors
-  :bind (("C-S-c C-S-c" . mc/edit-lines)
-         ("C->" . mc/mark-next-like-this)
-         ("C-<" . mc/mark-previous-like-this)
-         ("C-c C-<" . mc/mark-all-like-this)))
-
-;; ==========================================
-;; 5. LSP, Treesitter & Code Formatting
-;; ==========================================
-(use-package eglot
-  :hook ((python-ts-mode
-          rust-ts-mode
-          js-ts-mode
-          typescript-ts-mode
-          nix-mode
-          elixir-mode
-          c-ts-mode
-          go-ts-mode) . eglot-ensure)
+;; Local Microservice/Script Manager
+(use-package prodigy
+  :bind ("C-c y" . prodigy)
   :config
-  (setq eglot-autoshutdown t
-        eglot-events-buffer-size 0))
+  ;; Example: Add a background service to your IDE
+  (prodigy-define-service
+    :name "Local Dev Server"
+    :command "npm"
+    :args '("run" "dev")
+    :cwd "~/projects/my-app"
+    :tags '(node frontend)
+    :kill-signal 'sigkill))
 
-(use-package symbols-outline
-  :bind ("C-c o" . symbols-outline-show)
-  :config
-  (symbols-outline-follow-mode 1))
+;; Offline API Documentation Lookup
+(use-package devdocs
+  :bind ("C-h D" . devdocs-lookup))
 
-(use-package origami
-  :hook (prog-mode . origami-mode)
-  :bind ("C-c f" . origami-toggle-node))
+;; Snippet Engine
+(use-package yasnippet
+  :init (yas-global-mode 1))
+(use-package yasnippet-snippets)
 
-(use-package apheleia
-  :config
-  (setf (alist-get 'nix-mode apheleia-mode-alist) 'alejandra)
-  (setf (alist-get 'python-ts-mode apheleia-mode-alist) 'black)
-  (setf (alist-get 'js-ts-mode apheleia-mode-alist) 'prettier)
-  (setf (alist-get 'typescript-ts-mode apheleia-mode-alist) 'prettier)
-  (apheleia-global-mode +1))
+;; Hex Editor for Binaries
+(use-package nhexl-mode
+  :commands nhexl-mode)
 
-(use-package flymake
-  :hook (prog-mode . flymake-mode)
-  :bind ("C-c n" . flymake-goto-next-error))
-
-;; Language Modes
-(use-package nix-mode)
-(use-package markdown-mode)
-(use-package typst-ts-mode)
-(use-package elixir-mode)
-(use-package rust-mode)
-(use-package zig-mode)
-
-;; Fill Column Indicators
-(add-hook 'nix-mode-hook (lambda () (setq display-fill-column-indicator-column 110) (display-fill-column-indicator-mode 1)))
-(add-hook 'python-ts-mode-hook (lambda () (setq display-fill-column-indicator-column 88) (display-fill-column-indicator-mode 1)))
-(add-hook 'typescript-ts-mode-hook (lambda () (setq display-fill-column-indicator-column 100) (display-fill-column-indicator-mode 1)))
+;; Real-time Collaborative Editing (VS Live Share alternative)
+(use-package crdt
+  :commands (crdt-share-buffer crdt-connect))
 
 ;; ==========================================
-;; 6. Visual Studio DAP Debugger Engine
+;; 4. Evil Mode, Completion & LSP Core
 ;; ==========================================
-(use-package dape
-  :bind (("<f5>" . dape)
-         ("<f9>" . dape-breakpoint-toggle)
-         ("<f10>" . dape-next)
-         ("<f11>" . dape-step-in)
-         ("S-<f11>" . dape-step-out))
-  :config
-  (setq dape-buffer-window-arrangement 'right)
-  (add-hook 'dape-on-start-hooks 'save-some-buffers))
+(use-package evil :init (setq evil-want-integration t evil-undo-system 'undo-tree) :config (evil-mode 1))
+(use-package evil-collection :after evil :config (evil-collection-init))
+(use-package undo-tree :init (global-undo-tree-mode))
 
-;; ==========================================
-;; 7. File Tree, Terminal & Git Integration
-;; ==========================================
-(use-package treemacs
-  :bind ("<f8>" . treemacs)
-  :config
-  (setq treemacs-width 30
-        treemacs-is-never-other-window t))
+(use-package vertico :init (vertico-mode 1))
+(use-package marginalia :init (marginalia-mode 1))
+(use-package corfu :init (global-corfu-mode) :custom (corfu-auto t))
+(use-package projectile :init (projectile-mode +1))
+(use-package treemacs :bind ("<f8>" . treemacs))
 
-(use-package treemacs-nerd-icons
-  :config
-  (treemacs-load-theme "nerd-icons"))
-
+(use-package eglot :hook ((prog-mode . eglot-ensure)))
+(use-package apheleia :config (apheleia-global-mode +1))
+(use-package dape :bind ("<f5>" . dape))
 (use-package magit)
-
-(use-package blamer
-  :bind ("C-c b" . blamer-show-commit-info)
-  :custom
-  (blamer-idle-time 0.5)
-  (blamer-min-offset 30)
-  :custom-face
-  (blamer-face ((t :foreground "#7f849c" :background nil :italic t))))
-
-(use-package diff-hl
-  :init (global-diff-hl-mode)
-  :hook (magit-post-refresh . diff-hl-magit-post-refresh))
-
-(use-package hl-todo
-  :init (global-hl-todo-mode))
-
-(use-package wgrep)
-(use-package project
-  :bind ("C-c p f" . project-find-file))
-
 (use-package vterm)
-(use-package vterm-toggle
-  :bind ("C-c t" . vterm-toggle))
 
-(use-package windmove
-  :config (windmove-default-keybindings 'shift))
+;; AI Integration
+(use-package gptel
+  :bind ("C-c a" . gptel)
+  :config (setq gptel-model "llama3"
+                gptel-backend (gptel-make-ollama "Ollama" :host "localhost:11434" :stream t)))
 
 ;; ==========================================
-;; 8. Core Native Keybindings
+;; 5. Keybindings & Daemon Startup
 ;; ==========================================
 (global-set-key (kbd "C-s") 'save-buffer)
-(global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-c g") 'magit-status)
-(global-set-key (kbd "C-c e") 'dired-jump)
+(global-set-key (kbd "C-c e") 'treemacs)
 
-;; ==========================================
-;; 9. Daemon Frame Creation Fixes
-;; ==========================================
 (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
 
 (add-hook 'server-after-make-frame-hook

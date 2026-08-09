@@ -1,39 +1,65 @@
 {pkgs, ...}: {
-  # 1. Enable background Emacs user service
   services.emacs = {
     enable = true;
     client.enable = true;
   };
 
-  # 2. Main Emacs package declaration with native compilation & dynamic packages
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs-pgtk; # Native compilation + modern GTK/Wayland GUI
+    package = pkgs.emacs-pgtk;
     extraPackages = epkgs:
       with epkgs; [
-        # Core & Macro Frameworks
+        # Core Extensions & Evil Framework
         use-package
         general
         diminish
-
-        # Evil / Vim Emulation
+        s
+        dash
+        f
+        async
+        ht
+        parsebib
+        hydra
         evil
         evil-collection
         evil-surround
+        evil-nerd-commenter
+        evil-goggles
+        evil-matchit
+        evil-anzu
+        evil-snipe
+        evil-exchange
+        evil-indent-plus
+        evil-smartparens
+        evil-args
+        evil-commentary
+        evil-easymotion
+        evil-mc
+        evil-multiedit
 
-        # Visual Studio Style UI, Breadcrumbs & Themes
+        # UI, Aesthetics, & Status Chrome
         catppuccin-theme
         doom-modeline
         dashboard
         nerd-icons
         rainbow-delimiters
-        rainbow-mode
         highlight-indent-guides
         breadcrumb
         symbols-outline
         origami
+        centaur-tabs
+        minions
+        beacon
+        page-break-lines
+        spacious-padding
+        indent-bars
+        solaire-mode
+        mixed-pitch
+        telephone-line
+        nyan-mode
+        minimap # The classic IDE code minimap on the side
 
-        # Completion & Navigation Stack (Telescope / Visual Studio Search)
+        # Completion, Search, Navigation & Action Menu
         vertico
         marginalia
         orderless
@@ -44,35 +70,96 @@
         embark-consult
         avy
         which-key
+        helpful
+        imenu-list
+        wgrep
+        ace-window
+        consult-flycheck
+        smart-jump
+        cape
+        prescient
+        vertico-prescient
+        consult-eglot
+        yasnippet
+        yasnippet-snippets
 
-        # File Tree, Workspaces & Multi-cursor Editing
+        # Workspaces, Project Tracking & File Explorer
+        projectile
+        consult-projectile
         bufler
         treemacs
         treemacs-evil
         treemacs-nerd-icons
         multiple-cursors
+        dired-sidebar
+        dired-open
+        eyebrowse
+        window-numbering
+        switch-window
+        persp-mode
+        ibuffer-projectile
+        projectile-ripgrep
+        treemacs-projectile
+        treemacs-magit
 
-        # Terminal, Formatter & DAP Debugger (Visual Studio Debugger)
+        # Terminal, Formatter, DAP Debuggers & Refactoring Tools
         vterm
         vterm-toggle
         project
         apheleia
-        dape # Debug Adapter Protocol for Emacs
+        dape
+        undo-tree
+        popper
+        smartparens
+        aggressive-indent
+        expand-region
+        iedit
+        ws-butler
+        super-save
+        emmet-mode
+        format-all
+        crux
+        string-inflection
 
-        # Language Modes
-        nix-mode
-        markdown-mode
-        elixir-mode
-        rust-mode
-        zig-mode
-        typst-ts-mode
+        # Developer Docs, Notes & AI Code Assistance
+        pdf-tools
+        gptel
+        copilot
+        ellama
+        aider
+        devdocs
+        zeal-at-point # Offline API documentation
+        org-roam
+        org-roam-ui # Developer knowledge base
 
-        # Git, Inline Blame & Search Tools
+        # Advanced IDE Features (The "Never Use But Have" Suite)
+        restclient
+        verb # Postman/Insomnia replacements
+        docker
+        dockerfile-mode # Docker container & image management
+        kubernetes
+        k8s-mode # K8s cluster management inside Emacs
+        prodigy # Local microservice & background job runner
+        vlf # Very Large File support (for massive logs)
+        nhexl-mode # Advanced Hex editing for binaries
+        crdt # Real-time collaborative editing (like VS Live Share)
+        direnv
+        envrc # Auto-load local environment variables per project
+        ejc-sql
+        edbi # Native Database connections (Postgres/MySQL)
+        just-mode # Support for 'just' command runners
+
+        # Git Integration
         magit
+        forge
         blamer
         diff-hl
         hl-todo
-        wgrep
+        git-timemachine
+        git-gutter
+        git-gutter-fringe
+        magit-todos
+        diffview
 
         # Treesitter Grammars
         (treesit-grammars.with-grammars (p: [
@@ -89,13 +176,30 @@
           p.tree-sitter-typescript
           p.tree-sitter-typst
           p.tree-sitter-yaml
+          p.tree-sitter-html
+          p.tree-sitter-css
+          p.tree-sitter-dockerfile
+          p.tree-sitter-markdown
+          p.tree-sitter-ruby
+          p.tree-sitter-java
+          p.tree-sitter-php
+          p.tree-sitter-scala
+          p.tree-sitter-haskell
+          p.tree-sitter-c-sharp
+          p.tree-sitter-lua
+          p.tree-sitter-julia
+          p.tree-sitter-ocaml
+          p.tree-sitter-kotlin
+          p.tree-sitter-swift
+          p.tree-sitter-sql
+          p.tree-sitter-jsonnet
         ]))
       ];
   };
 
-  # 3. Native system binaries, LSP servers, Debuggers, and Code formatters
+  # Complete Developer System Binaries
   home.packages = with pkgs; [
-    # Searching & Terminal Compilation Backends
+    beamPackages.elixir
     ripgrep
     fd
     libvterm
@@ -103,32 +207,46 @@
     gnumake
     gcc
     zstd
-
-    # Language Servers (LSP Backends for Eglot)
-    nil # Nix LSP
-    pyright # Python LSP
-    rust-analyzer # Rust LSP
-    gopls # Go LSP
-    typescript-language-server # JS/TS LSP
-    vscode-langservers-extracted # HTML/CSS/JSON LSP
-
-    # Debug Adapters (DAP Backends for Dape)
-    lldb # C/C++/Rust DAP Debugger
-    python3Packages.debugpy # Python DAP Debugger
-
-    # Code Formatters (Backends for Apheleia)
-    alejandra # Nix Formatter
-    black # Python Formatter
-    prettier # JS/TS/HTML/JSON Formatter
+    jq
+    git
+    curl
+    wget
+    unzip
+    nil
+    pyright
+    rust-analyzer
+    gopls
+    typescript-language-server
+    vscode-langservers-extracted
+    lldb
+    python3Packages.debugpy
+    terraform-ls
+    nodejs
+    alejandra
+    black
+    prettier
     elixir
-  ];
 
-  # 4. Hide the default standalone launcher
+    ollama
+    sqlite
+    poppler_gi
+    ghostscript # AI, DBs, PDFs
+
+    # Advanced IDE External Dependencies
+    docker
+    kubectl
+    k9s # Container & Cluster CLIs
+    direnv
+    just # Env and build tools
+    zeal # Offline docset browser backend
+    pgcli
+    mycli # Database terminal tools
+  ];
   xdg.desktopEntries.emacs = {
     name = "Emacs";
     noDisplay = true;
   };
 
   # 5. Symlink init.el configuration file
-  home.file.".config/emacs/init.el".source = ./emacs/init.el;
+  xdg.configFile."emacs/init.el".source = ./emacs/init.el;
 }
