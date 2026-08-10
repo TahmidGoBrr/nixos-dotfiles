@@ -39,6 +39,7 @@
 
         # UI, Aesthetics, & Status Chrome
         catppuccin-theme
+        doom-themes
         doom-modeline
         dashboard
         nerd-icons
@@ -64,6 +65,7 @@
         marginalia
         orderless
         corfu
+        company
         consult
         consult-dir
         embark
@@ -82,6 +84,11 @@
         consult-eglot
         yasnippet
         yasnippet-snippets
+
+        # LSP & Tree-sitter Highlighting
+        lsp-mode
+        lsp-ui
+        treesit-auto
 
         # Workspaces, Project Tracking & File Explorer
         projectile
@@ -206,7 +213,7 @@
       ];
   };
 
-  # Complete Developer System Binaries & Formatters
+  # Complete Developer System Binaries, Fonts & Formatters
   home.packages = with pkgs; [
     # Formatters (NVF Parity)
     alejandra
@@ -216,6 +223,7 @@
 
     # Compilers, Tools & LSPs
     beamPackages.elixir
+    clang-tools
     ripgrep
     fd
     libvterm
@@ -224,9 +232,6 @@
     gcc
     zstd
     jq
-    git
-    curl
-    wget
     unzip
     nil
     pyright

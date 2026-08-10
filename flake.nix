@@ -22,8 +22,22 @@
       specialArgs = {inherit inputs;};
       modules = [
         ./hosts/taichi
-        home-manager.nixosModules.home-manager
         inputs.nvf.nixosModules.default
+        home-manager.nixosModules.home-manager
+        {
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            extraSpecialArgs = {inherit inputs;};
+            users.tahmid = {
+              imports = [
+                inputs.nixcord.homeModules.nixcord
+                ./modules/apps/nixcord.nix
+                ./modules/apps/emacs.nix
+              ];
+            };
+          };
+        }
       ];
     };
   };

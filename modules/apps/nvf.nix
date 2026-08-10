@@ -1,7 +1,4 @@
 {pkgs, ...}: {
-  environment.systemPackages = with pkgs; [
-    beamPackages.elixir
-  ];
   programs.nvf = {
     enable = true;
 
