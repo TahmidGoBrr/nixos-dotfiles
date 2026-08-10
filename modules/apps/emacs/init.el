@@ -314,5 +314,6 @@
             (with-current-buffer (get-buffer-create "*dashboard*")
               (dashboard-refresh-buffer))
             (switch-to-buffer "*dashboard*")))
-(provide 'init))
+(provide 'init)
 ;;; init.el ends here
+ 
