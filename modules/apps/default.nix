@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   imports = [
-    ./nvf.nix
+    #./nvf.nix
     ./virt.nix
   ];
 
