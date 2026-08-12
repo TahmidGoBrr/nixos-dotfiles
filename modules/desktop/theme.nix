@@ -1,5 +1,4 @@
 {pkgs, ...}: {
-  # 1. Install theme packages system-wide with explicit Catppuccin variants
   home-manager.users.tahmid = {
     home.pointerCursor = {
       enable = true;
@@ -9,6 +8,7 @@
       name = "Bibata-Modern-Ice";
       size = 24;
     };
+
     xdg = {
       configFile = {
         "hypr/hyprland.lua".source = ./hypr/hyprland.lua;
@@ -16,7 +16,45 @@
         "wezterm".source = ./wezterm;
         "waybar".source = ./waybar;
         "rofi".source = ./rofi;
+
+        # Direct GTK 4 CSS Injection (Fixes Libadwaita & GTK4 Apps)
+        "gtk-4.0/gtk.css".text = ''
+          @define-color window_bg_color #16181a;
+          @define-color window_fg_color #d3d7dc;
+          @define-color view_bg_color #1e2124;
+          @define-color view_fg_color #d3d7dc;
+          @define-color headerbar_bg_color #16181a;
+          @define-color headerbar_fg_color #d3d7dc;
+          @define-color headerbar_border_color #282c30;
+          @define-color card_bg_color #1e2124;
+          @define-color card_fg_color #d3d7dc;
+          @define-color popover_bg_color #16181a;
+          @define-color popover_fg_color #d3d7dc;
+          @define-color dialog_bg_color #16181a;
+          @define-color dialog_fg_color #d3d7dc;
+          @define-color border_color #282c30;
+          @define-color accent_color #8f99a3;
+          @define-color accent_bg_color #282c30;
+          @define-color accent_fg_color #ffffff;
+        '';
+
+        # Direct GTK 3 CSS Injection
+        "gtk-3.0/gtk.css".text = ''
+          @define-color theme_bg_color #16181a;
+          @define-color theme_fg_color #d3d7dc;
+          @define-color theme_base_color #1e2124;
+          @define-color theme_text_color #d3d7dc;
+          @define-color theme_selected_bg_color #282c30;
+          @define-color theme_selected_fg_color #ffffff;
+          @define-color border_color #282c30;
+
+          window, .background {
+            background-color: #16181a;
+            color: #d3d7dc;
+          }
+        '';
       };
+
       desktopEntries = {
         qt5ct = {
           name = "Qt5 Settings";
@@ -28,20 +66,13 @@
         };
       };
     };
-    dconf.settings = {
-      "org/gnome/desktop/interface" = {
-        color-scheme = "prefer-dark";
-      };
-    };
+
+    # Force dark scheme via Home Manager GTK configuration
     gtk = {
       enable = true;
       theme = {
-        name = "catppuccin-mocha-blue-standard";
-        package = pkgs.catppuccin-gtk.override {
-          accents = ["blue"];
-          size = "standard";
-          variant = "mocha";
-        };
+        name = "adw-gtk3-dark";
+        package = pkgs.adw-gtk3;
       };
       iconTheme = {
         name = "Papirus-Dark";
@@ -59,39 +90,46 @@
         gtk-application-prefer-dark-theme = 1;
       };
     };
+
+    # Set Dconf settings to enforce dark mode across GNOME/GTK runtime portals
+    dconf.settings = {
+      "org/gnome/desktop/interface" = {
+        color-scheme = "prefer-dark";
+        gtk-theme = "adw-gtk3-dark";
+        icon-theme = "Papirus-Dark";
+        cursor-theme = "Bibata-Modern-Ice";
+      };
+    };
+
     home.file."wp.jpg".source = ./wp.jpg;
   };
+
   environment.systemPackages = with pkgs; [
-    (catppuccin-gtk.override {
-      accents = ["blue"];
-      size = "standard";
-      variant = "mocha";
-    })
+    adw-gtk3
     papirus-icon-theme
     dconf
     kdePackages.qt6ct
     libsForQt5.qt5ct
+    glib # provides gsettings
   ];
 
-  # 2. Enable Dconf for GTK runtime settings
   programs.dconf.enable = true;
 
-  # 3. Environment Variables (Cleaned up)
+  # Clean, functional Wayland / GTK Session Variables
   environment.sessionVariables = {
     XCURSOR_SIZE = "24";
     HYPRCURSOR_SIZE = "24";
     XCURSOR_THEME = "Bibata-Modern-Ice";
-    NIXOS_OZONE_WL = "1"; # Forces Electron/Chromium apps onto native Wayland
+    NIXOS_OZONE_WL = "1";
     ELECTRON_OZONE_PLATFORM_HINT = "wayland";
-    GTK_THEME = "catppuccin-mocha-blue-standard";
     GDK_BACKEND = "wayland,x11";
     QT_QPA_PLATFORMTHEME = "gtk2";
     QT_QPA_PLATFORM = "wayland;xcb";
     SDL_VIDEODRIVER = "wayland";
     CLUTTER_BACKEND = "wayland";
+    ADW_DISABLE_PORTAL = "0";
   };
 
-  # 5. Qt Theme Integration
   qt = {
     enable = true;
     platformTheme = "gtk2";

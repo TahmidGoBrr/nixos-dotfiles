@@ -1,14 +1,10 @@
-/* Tokyo Night Theme - Blue & Purple Accents with Iosevka */
+/* Neutral Slate Rofi Theme */
 * {
-    /* Base Colors */
-    bg-col:     #1a1b26;  /* Tokyo Night Background */
-    bg-col-alt: #16161e;  /* Tokyo Night Darker Background */
-    border-col: #292e42;  /* Tokyo Night Border/Selection */
-    fg-col:     #c0caf5;  /* Tokyo Night Foreground */
-    fg-col2:    #f7768e;  /* Tokyo Night Red */
-    
-    /* Primary Accent */
-    main:   #7aa2f7;  /* Blue: For row selections */
+    bg-col:     #16181a;
+    bg-col-alt: #1e2124;
+    border-col: #282c30;
+    fg-col:     #d3d7dc;
+    main:       #8f99a3;
     
     width: 600;
     font: "Iosevka Nerd Font 12";
@@ -21,7 +17,7 @@ element-text, element-icon, mode-switcher {
 
 window {
     height: 360px;
-    border: 3px;
+    border: 2px;
     border-radius: 0px;
     border-color: @main; 
     background-color: @bg-col;
@@ -41,7 +37,7 @@ inputbar {
 prompt {
     background-color: @main; 
     padding: 6px;
-    text-color: @bg-col;
+    text-color: #16181a;
     border-radius: 0px;
     margin: 20px 0px 0px 20px;
 }
@@ -68,8 +64,8 @@ element {
 }
 
 element selected {
-    background-color: @main; 
-    text-color: @bg-col-alt;
+    background-color: #282c30; 
+    text-color: #ffffff;
     border-radius: 0px;
 }
 
@@ -94,7 +90,7 @@ button {
     horizontal-align: 0.5;
 }
 
-button main {
+button selected {
     background-color: @bg-col;
-    text-color: @main; 
+    text-color: #ffffff; 
 }

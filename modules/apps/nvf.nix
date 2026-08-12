@@ -33,11 +33,32 @@
           timeoutlen = 300;
           signcolumn = "yes";
         };
+
+        # Base16 Neutral Compline-Compatible Palette
         theme = {
           enable = true;
-          name = "catppuccin";
-          style = "mocha";
+          name = "base16";
+          base16-colors = {
+            # Direct base16 override table for strict charcoal/slate neutrality
+            base00 = "#16181a"; # Default Background
+            base01 = "#1e2124"; # Lighter Background
+            base02 = "#282c30"; # Selection Background
+            base03 = "#5c6370"; # Comments / Muted
+            base04 = "#8f99a3"; # Dark Foreground
+            base05 = "#d3d7dc"; # Default Foreground
+            base06 = "#e6e9ed"; # Light Foreground
+            base07 = "#ffffff"; # Light Background / Pure White
+            base08 = "#e06c75"; # Neutral Muted Red
+            base09 = "#d19a66"; # Neutral Orange
+            base0A = "#e5c07b"; # Muted Yellow
+            base0B = "#98c379"; # Muted Green
+            base0C = "#56b6c2"; # Muted Cyan
+            base0D = "#70a5fd"; # Slate Accent
+            base0E = "#c678dd"; # Muted Purple
+            base0F = "#be5046"; # Dark Red
+          };
         };
+
         ui = {
           noice.enable = true;
           fastaction.enable = true;
@@ -56,6 +77,7 @@
             };
           };
         };
+
         visuals = {
           nvim-web-devicons.enable = true;
           nvim-cursorline.enable = true;
@@ -64,12 +86,14 @@
           highlight-undo.enable = true;
           indent-blankline.enable = true;
           nvim-scrollbar.enable = true;
-          rainbow-delimiters.enable = true;
+          rainbow-delimiters.enable = false;
         };
+
         statusline.lualine = {
           enable = true;
-          theme = "auto";
+          theme = "base16";
         };
+
         lsp = {
           enable = true;
           formatOnSave = true;
@@ -81,12 +105,14 @@
           nvim-docs-view.enable = true;
           presets.harper.enable = true;
         };
+
         debugger = {
           nvim-dap = {
             enable = true;
             ui.enable = true;
           };
         };
+
         autocomplete = {
           blink-cmp = {
             enable = true;
@@ -95,9 +121,11 @@
             };
           };
         };
+
         snippets = {
           luasnip.enable = true;
         };
+
         treesitter = {
           enable = true;
           fold = true;
@@ -105,6 +133,7 @@
           autotagHtml = true;
           textobjects.enable = true;
         };
+
         languages = {
           enableFormat = true;
           enableTreesitter = true;
@@ -148,6 +177,7 @@
           arduino.enable = true;
           csharp.enable = true;
         };
+
         git = {
           enable = true;
           gitsigns = {
@@ -155,6 +185,7 @@
             codeActions.enable = true;
           };
         };
+
         utility = {
           preview.markdownPreview.enable = true;
           surround.enable = true;
@@ -163,20 +194,24 @@
           diffview-nvim.enable = true;
           grug-far-nvim.enable = true;
         };
+
         terminal = {
           toggleterm = {
             enable = true;
             lazygit.enable = true;
           };
         };
+
         binds = {
           whichKey.enable = true;
           cheatsheet.enable = true;
         };
+
         globals = {
           mapleader = " ";
           maplocalleader = ",";
         };
+
         keymaps = [
           {
             key = "<C-h>";
@@ -184,63 +219,54 @@
             mode = "n";
             desc = "Focus Left Window";
           }
-
           {
             key = "<C-j>";
             action = "<C-w>j";
             mode = "n";
             desc = "Focus Down Window";
           }
-
           {
             key = "<C-k>";
             action = "<C-w>k";
             mode = "n";
             desc = "Focus Up Window";
           }
-
           {
             key = "<C-l>";
             action = "<C-w>l";
             mode = "n";
             desc = "Focus Right Window";
           }
-
           {
             key = "<Shift-h>";
             action = ":BufferLineCyclePrev<CR>";
             mode = "n";
             desc = "Previous Buffer";
           }
-
           {
             key = "<Shift-l>";
             action = ":BufferLineCycleNext<CR>";
             mode = "n";
             desc = "Next Buffer";
           }
-
           {
             key = "<leader>bd";
             action = ":bdelete<CR>";
             mode = "n";
             desc = "Close Current Buffer";
           }
-
           {
             key = "<leader>e";
             action = ":Neotree toggle<CR>";
             mode = "n";
             desc = "Toggle Neo-tree";
           }
-
           {
             key = "<leader>gg";
             action = ":Lazygit<CR>";
             mode = "n";
             desc = "Open Lazygit";
           }
-
           {
             key = "<C-s>";
             action = ":w<CR>";

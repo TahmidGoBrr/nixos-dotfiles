@@ -1,15 +1,22 @@
-{pkgs, ...}: {
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
+  # Enable the Emacs daemon and client
   services.emacs = {
     enable = true;
     client.enable = true;
   };
 
+  # Core Emacs Program Configuration
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs-pgtk;
+    package = pkgs.emacs-pgtk; # Pure GTK for Wayland/Hyprland native performance
     extraPackages = epkgs:
       with epkgs; [
-        # Core Extensions & Evil Framework
+        # Core Extensions
         use-package
         general
         diminish
@@ -20,6 +27,8 @@
         ht
         parsebib
         hydra
+
+        # Evil Framework
         evil
         evil-collection
         evil-surround
@@ -37,8 +46,7 @@
         evil-mc
         evil-multiedit
 
-        # UI, Aesthetics, & Status Chrome
-        catppuccin-theme
+        # UI & Themes
         doom-themes
         doom-modeline
         dashboard
@@ -60,7 +68,7 @@
         nyan-mode
         minimap
 
-        # Completion, Search, Navigation & Action Menu
+        # Completion & Navigation
         vertico
         marginalia
         orderless
@@ -85,12 +93,12 @@
         yasnippet
         yasnippet-snippets
 
-        # LSP & Tree-sitter Highlighting
+        # LSP & Treesitter
         lsp-mode
         lsp-ui
         treesit-auto
 
-        # Workspaces, Project Tracking & File Explorer
+        # Workspaces & Files
         projectile
         consult-projectile
         bufler
@@ -109,7 +117,7 @@
         treemacs-projectile
         treemacs-magit
 
-        # Terminal, Formatter, DAP Debuggers & Refactoring Tools
+        # Terminal & Refactoring
         vterm
         vterm-toggle
         project
@@ -128,7 +136,7 @@
         crux
         string-inflection
 
-        # Major Language Modes
+        # Languages
         lua-mode
         nix-mode
         yaml-mode
@@ -137,18 +145,14 @@
         go-mode
         typescript-mode
 
-        # Developer Docs, Notes & AI Code Assistance
+        # Docs & Org
         pdf-tools
-        gptel
-        copilot
-        ellama
-        aider
         devdocs
         zeal-at-point
         org-roam
         org-roam-ui
 
-        # Advanced IDE Features
+        # IDE Features
         restclient
         verb
         docker
@@ -165,7 +169,7 @@
         edbi
         just-mode
 
-        # Git Integration
+        # Git
         magit
         forge
         blamer
@@ -178,93 +182,70 @@
         diffview
 
         # Treesitter Grammars
-        (treesit-grammars.with-grammars (p: [
-          p.tree-sitter-bash
-          p.tree-sitter-c
-          p.tree-sitter-cpp
-          p.tree-sitter-elixir
-          p.tree-sitter-go
-          p.tree-sitter-json
-          p.tree-sitter-javascript
-          p.tree-sitter-nix
-          p.tree-sitter-python
-          p.tree-sitter-rust
-          p.tree-sitter-typescript
-          p.tree-sitter-typst
-          p.tree-sitter-yaml
-          p.tree-sitter-html
-          p.tree-sitter-css
-          p.tree-sitter-dockerfile
-          p.tree-sitter-markdown
-          p.tree-sitter-ruby
-          p.tree-sitter-java
-          p.tree-sitter-php
-          p.tree-sitter-scala
-          p.tree-sitter-haskell
-          p.tree-sitter-c-sharp
-          p.tree-sitter-lua
-          p.tree-sitter-julia
-          p.tree-sitter-ocaml
-          p.tree-sitter-kotlin
-          p.tree-sitter-swift
-          p.tree-sitter-sql
-          p.tree-sitter-jsonnet
-        ]))
+        (treesit-grammars.with-all-grammars)
       ];
   };
 
   # Complete Developer System Binaries, Fonts & Formatters
   home.packages = with pkgs; [
-    # Formatters (NVF Parity)
+    nerd-fonts.iosevka
     alejandra
     black
     prettier
     shfmt
-
-    # Compilers, Tools & LSPs
     beamPackages.elixir
     clang-tools
-    ripgrep
-    fd
-    libvterm
     cmake
-    gnumake
+    fd
     gcc
-    zstd
-    jq
-    unzip
-    nil
-    pyright
-    rust-analyzer
-    gopls
-    typescript-language-server
-    vscode-langservers-extracted
-    lldb
-    python3Packages.debugpy
-    terraform-ls
-    nodejs
-
-    ollama
-    sqlite
-    poppler_gi
     ghostscript
-
-    # Advanced IDE External Dependencies
-    docker
-    kubectl
-    k9s
+    gnumake
+    gopls
+    jq
+    libvterm
+    lldb
+    nil
+    nodejs
+    poppler_gi
+    pyright
+    python3Packages.debugpy
+    ripgrep
+    rust-analyzer
+    sqlite
+    terraform-ls
+    typescript-language-server
+    unzip
+    vscode-langservers-extracted
+    zstd
     direnv
+    docker
     just
-    zeal
-    pgcli
+    k9s
+    kubectl
     mycli
+    pgcli
+    zeal
   ];
+
+  # Emacs Daemon Desktop Entry
+  xdg.desktopEntries.emacs-client = {
+    name = "Emacs Client";
+    genericName = "Text Editor";
+    comment = "The GNU Emacs.";
+    exec = "emacsclient -c -a \"emacs\" %F";
+    icon = "emacs";
+    terminal = false;
+    categories = ["Development" "TextEditor"];
+  };
 
   xdg.desktopEntries.emacs = {
     name = "Emacs";
     noDisplay = true;
   };
 
-  # Symlink init.el configuration file
-  xdg.configFile."emacs/init.el".source = ./emacs/init.el;
+  # Symlink configuration files
+  xdg.configFile = {
+    "emacs/init.el".source = ./emacs/init.el;
+    "emacs/early-init.el".source = ./emacs/early-init.el;
+  };
 }

@@ -3,9 +3,36 @@ local act = wezterm.action
 local config = wezterm.config_builder()
 
 -- =====================================================================
--- 1. VISUALS & THEME
+-- 1. VISUALS & NEUTRAL COMPLINE COLOR SCHEME
 -- =====================================================================
-config.color_scheme = "Catppuccin Mocha"
+config.colors = {
+  foreground = "#d3d7dc",
+  background = "#16181a",
+  cursor_bg = "#8f99a3",
+  cursor_fg = "#16181a",
+  selection_bg = "#282c30",
+
+  ansi = {
+    "#16181a",
+    "#8f99a3",
+    "#a8b0b8",
+    "#c0c7d0",
+    "#8f99a3",
+    "#a8b0b8",
+    "#c0c7d0",
+    "#d3d7dc",
+  },
+  brights = {
+    "#282c30",
+    "#8f99a3",
+    "#a8b0b8",
+    "#c0c7d0",
+    "#8f99a3",
+    "#a8b0b8",
+    "#c0c7d0",
+    "#ffffff",
+  },
+}
 
 -- Window Transparency & Layout
 config.window_background_opacity = 0.88
@@ -39,14 +66,14 @@ config.cursor_blink_rate = 600
 -- =====================================================================
 -- 3. PERFORMANCE & WAYLAND OPTIMIZATIONS
 -- =====================================================================
-config.enable_wayland = false
-config.front_end = "OpenGL" -- WebGPU rendering backend for minimal latency on Linux
+config.enable_wayland = true
+config.front_end = "OpenGL"
 config.scrollback_lines = 10000
 config.check_for_updates = false
 config.audible_bell = "Disabled"
 
 -- =====================================================================
--- 4. NICHE FEATURES: HYPERLINKS & QUICK-SELECT REGEX
+-- 4. HYPERLINKS & QUICK-SELECT REGEX
 -- =====================================================================
 config.hyperlink_rules = wezterm.default_hyperlink_rules()
 
@@ -100,7 +127,6 @@ config.keys = {
   { key = "5", mods = "ALT", action = act.ActivateTab(4) },
 
   -- --- Quick-Select Mode (Leader + Space) ---
-  -- Highlights visible text (URLs, paths, hashes) for quick keyboard copying
   { key = "Space", mods = "LEADER", action = act.QuickSelect },
 
   -- --- Vi / Copy Mode (Leader + [) ---
@@ -116,44 +142,7 @@ config.keys = {
   { key = "0", mods = "CTRL", action = act.ResetFontSize },
 }
 
--- =====================================================================
--- 6. CUSTOM STATUS BAR (Battery, Workspace & Leader Indicator)
--- =====================================================================
-wezterm.on("update-right-status", function(window, pane)
-  local cells = {}
-
-  -- Show when Leader key is active
-  if window:leader_is_active() then
-    table.insert(cells, "LEADER")
-  end
-
-  -- Active Workspace name
-  local stat = window:active_workspace()
-  table.insert(cells, "󰖲 " .. stat)
-
-  -- Battery Percentage indicator
-  for _, b in ipairs(wezterm.battery_info()) do
-    table.insert(cells, string.format("󰁹 %.0f%%", b.state_of_charge * 100))
-  end
-
-  -- Local Time
-  local date = wezterm.strftime("󰃰 %H:%M")
-  table.insert(cells, date)
-
-  -- Render cells using Tokyo Night color accents
-  local formatted = {}
-  for i, cell in ipairs(cells) do
-    table.insert(formatted, { Foreground = { Color = "#7aa2f7" } })
-    table.insert(formatted, { Text = " " .. cell .. " " })
-    if i < #cells then
-      table.insert(formatted, { Foreground = { Color = "#3b4261" } })
-      table.insert(formatted, { Text = "|" })
-    end
-  end
-
-  window:set_right_status(wezterm.format(formatted))
-end)
-
+-- Prevent Wayland from intercepting Super combinations
 for i = 0, 9 do
   table.insert(config.keys, {
     key = tostring(i),
@@ -161,7 +150,41 @@ for i = 0, 9 do
     action = wezterm.action.Nop,
   })
 end
--- Prevents Wayland from sending raw escape codes for Super combinations
+
 config.enable_csi_u_key_encoding = true
 config.send_composed_key_when_right_alt_is_pressed = false
+
+-- =====================================================================
+-- 6. CUSTOM STATUS BAR
+-- =====================================================================
+wezterm.on("update-right-status", function(window, pane)
+  local cells = {}
+
+  if window:leader_is_active() then
+    table.insert(cells, "LEADER")
+  end
+
+  local stat = window:active_workspace()
+  table.insert(cells, "󰖲 " .. stat)
+
+  for _, b in ipairs(wezterm.battery_info()) do
+    table.insert(cells, string.format("󰁹 %.0f%%", b.state_of_charge * 100))
+  end
+
+  local date = wezterm.strftime("󰃰 %H:%M")
+  table.insert(cells, date)
+
+  local formatted = {}
+  for i, cell in ipairs(cells) do
+    table.insert(formatted, { Foreground = { Color = "#d3d7dc" } })
+    table.insert(formatted, { Text = " " .. cell .. " " })
+    if i < #cells then
+      table.insert(formatted, { Foreground = { Color = "#282c30" } })
+      table.insert(formatted, { Text = "|" })
+    end
+  end
+
+  window:set_right_status(wezterm.format(formatted))
+end)
+
 return config

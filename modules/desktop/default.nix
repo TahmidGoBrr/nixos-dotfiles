@@ -24,25 +24,25 @@
     enable = true;
     settings = {
       global = {
-        font = "Sans 10";
+        font = "Iosevka Nerd Font 10";
         corner_radius = 0;
         frame_width = 2;
-        frame_color = "#89b4fa"; # Catppuccin Mocha Blue
+        frame_color = "#8f99a3"; # Neutral Slate Gray Frame
       };
       urgency_low = {
-        background = "#1e1e2e"; # Base
-        foreground = "#cdd6f4"; # Text
+        background = "#16181a"; # Dark Charcoal
+        foreground = "#d3d7dc"; # Off-white
         timeout = 5;
       };
       urgency_normal = {
-        background = "#1e1e2e"; # Base
-        foreground = "#cdd6f4"; # Text
+        background = "#16181a"; # Dark Charcoal
+        foreground = "#d3d7dc"; # Off-white
         timeout = 10;
       };
       urgency_critical = {
-        background = "#1e1e2e"; # Base
-        foreground = "#f38ba8"; # Red
-        frame_color = "#f38ba8"; # Red
+        background = "#16181a"; # Dark Charcoal
+        foreground = "#ffffff"; # Pure White
+        frame_color = "#d3d7dc"; # Neutral Light Gray
         timeout = 0;
       };
     };
