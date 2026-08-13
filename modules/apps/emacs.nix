@@ -8,6 +8,12 @@
   services.emacs = {
     enable = true;
     client.enable = true;
+    startWithUserSession = "graphical";
+  };
+
+  # Override the systemd service timeout separately
+  systemd.user.services.emacs = {
+    Service.TimeoutStartSec = "120";
   };
 
   # Core Emacs Program Configuration
@@ -56,7 +62,6 @@
         breadcrumb
         symbols-outline
         origami
-        centaur-tabs
         minions
         beacon
         page-break-lines
@@ -64,7 +69,6 @@
         indent-bars
         solaire-mode
         mixed-pitch
-        telephone-line
         nyan-mode
         minimap
 
@@ -84,6 +88,7 @@
         imenu-list
         wgrep
         ace-window
+        flycheck
         consult-flycheck
         smart-jump
         cape
@@ -144,13 +149,18 @@
         rust-mode
         go-mode
         typescript-mode
+        elixir-mode
+        terraform-mode
 
-        # Docs & Org
+        # Docs & Org OS Features
         pdf-tools
         devdocs
         zeal-at-point
         org-roam
         org-roam-ui
+        org-super-agenda
+        calfw
+        calfw-org
 
         # IDE Features
         restclient
@@ -168,6 +178,16 @@
         ejc-sql
         edbi
         just-mode
+
+        # Emacs OS Apps (Email, Chat, Media, RSS, Passwords, Torrents)
+        ement
+        emms
+        elfeed
+        mu4e
+        mu4e-alert
+        password-store
+        transmission
+        erc-hl-nicks
 
         # Git
         magit
@@ -225,13 +245,19 @@
     mycli
     pgcli
     zeal
+    pass
+
+    # OS App Dependencies
+    mu # Required for mu4e email indexing
+    isync # Recommended for pulling IMAP email
+    mpv # Required for EMMS music playback
   ];
 
   # Emacs Daemon Desktop Entry
   xdg.desktopEntries.emacs-client = {
     name = "Emacs Client";
     genericName = "Text Editor";
-    comment = "The GNU Emacs.";
+    comment = "The GNU Emacs OS.";
     exec = "emacsclient -c -a \"emacs\" %F";
     icon = "emacs";
     terminal = false;

@@ -4,11 +4,9 @@
 ;; 1. CORE ENGINE PERFORMANCE & OS-LEVEL GLOBAL OPTIONS
 ;; =============================================================================
 
-;; Force use-package to NOT download packages (Nix handles this declaratively)
 (require 'use-package)
 (setq use-package-always-ensure nil)
 
-;; Optimize Garbage Collection for Startup
 (setq gc-cons-threshold (* 500 1024 1024)
       read-process-output-max (* 1024 1024 200)
       fast-but-imprecise-scrolling t
@@ -37,7 +35,7 @@
 (setq display-line-numbers-type 'relative
       inhibit-startup-screen t
       inhibit-startup-message t
-      initial-scratch-message ";; Welcome to Emacs OS.\n\n"
+      initial-scratch-message nil
       ring-bell-function 'ignore
       visible-bell nil
       scroll-margin 2
@@ -53,7 +51,6 @@
       history-length 2000
       history-delete-duplicates t)
 
-;; Directories (Dynamically routed to prevent XDG vs home directory conflicts)
 (defvar my-backup-dir (locate-user-emacs-file "backups/"))
 (defvar my-autosave-dir (locate-user-emacs-file "autosaves/"))
 (defvar my-undo-dir (locate-user-emacs-file "undo/"))
@@ -65,7 +62,6 @@
 (setq backup-directory-alist `(("." . ,my-backup-dir))
       auto-save-file-name-transforms `((".*" ,my-autosave-dir t)))
 
-;; Global Modes
 (global-display-line-numbers-mode t)
 (global-hl-line-mode t)
 (save-place-mode 1)
@@ -79,7 +75,6 @@
 (column-number-mode 1)
 (show-paren-mode 1)
 
-;; Load VLF safely
 (use-package vlf
   :config
   (require 'vlf-setup)
@@ -109,85 +104,70 @@
 (setq tooltip-mode -1)
 (set-fringe-mode 10)
 
-;; Set core font to Iosevka Nerd Font for perfect Wayland/Hyprland rendering
-(set-face-attribute 'default nil :family "Iosevka Nerd Font" :height 120 :weight 'normal)
-(set-face-attribute 'fixed-pitch nil :family "Iosevka Nerd Font" :height 120)
-(set-face-attribute 'variable-pitch nil :family "Iosevka Nerd Font" :height 130 :weight 'regular)
-(set-fontset-font t 'symbol (font-spec :family "Symbols Nerd Font Mono") nil 'append)
+;; Native Tab Bar Configuration
+(tab-bar-mode 1)
+(setq tab-bar-show 1
+      tab-bar-close-button-show nil
+      tab-bar-new-tab-choice "*dashboard*"
+      tab-bar-format '(tab-bar-format-tabs tab-bar-format-align-right tab-bar-format-global))
 
-;; Safely apply the Compline Neutral Dark Theme globally
-(let ((bg0     "#16181a")  
-      (bg1     "#1e2124")  
-      (bg2     "#282c30")  
-      (fg0     "#ffffff")  
-      (fg1     "#d3d7dc")  
-      (muted   "#5c6370")  
-      (border  "#282c30")  
-      (accent  "#8f99a3")) 
-  (custom-set-faces
-   `(default ((t (:background ,bg0 :foreground ,fg1))))
-   `(fringe ((t (:background ,bg0))))
-   `(line-number ((t (:background ,bg0 :foreground ,muted))))
-   `(line-number-current-line ((t (:background ,bg1 :foreground ,fg0 :weight bold))))
-   `(mode-line ((t (:background ,bg1 :foreground ,fg1 :box (:line-width 1 :color ,border)))))
-   `(mode-line-inactive ((t (:background ,bg0 :foreground ,muted :box (:line-width 1 :color ,border)))))
-   `(vertical-border ((t (:foreground ,border))))
-   `(window-divider ((t (:foreground ,border))))
-   `(cursor ((t (:background ,fg0 :foreground ,bg0))))
-   `(region ((t (:background ,bg2 :foreground ,fg0))))
-   `(highlight ((t (:background ,bg2))))
-   `(hl-line ((t (:background ,bg1))))
-   `(minibuffer-prompt ((t (:foreground ,fg0 :weight bold))))
-   `(font-lock-comment-face ((t (:foreground ,muted :italic t))))
-   `(font-lock-doc-face ((t (:foreground ,muted))))
-   `(font-lock-string-face ((t (:foreground ,fg1))))
-   `(font-lock-keyword-face ((t (:foreground ,fg0 :weight bold))))
-   `(font-lock-function-name-face ((t (:foreground ,fg0))))
-   `(font-lock-variable-name-face ((t (:foreground ,fg1))))
-   `(font-lock-type-face ((t (:foreground ,accent))))
-   `(font-lock-constant-face ((t (:foreground ,accent))))))
+(use-package doom-themes
+  :config
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t)
+  (load-theme 'doom-one t)
+  (require 'doom-themes-ext-org)
+  (doom-themes-org-config))
+  ;; Note: You can append your manual hex overrides right after this block 
+  ;; using `custom-set-faces` or the doom-themes API as you had it before.
 
 (use-package doom-modeline
-  :init (doom-modeline-mode 1)
+  :config (doom-modeline-mode 1)
   :custom
-  (doom-modeline-height 32)
+  (doom-modeline-height 35)
   (doom-modeline-bar-width 4)
+  (doom-modeline-icon t)
+  (doom-modeline-major-mode-icon t)
+  (doom-modeline-major-mode-color-icon t)
   (doom-modeline-buffer-file-name-style 'truncate-upto-project)
-  (doom-modeline-buffer-state-icon t)
-  (doom-modeline-buffer-modification-icon t)
-  (doom-modeline-minor-modes nil)
-  (doom-modeline-enable-word-count t)
-  (doom-modeline-buffer-encoding t)
-  (doom-modeline-indent-info nil)
-  (doom-modeline-checker-simple-format t)
-  (doom-modeline-vcs-max-length 12)
-  (doom-modeline-env-version t))
+  (doom-modeline-icon-provider 'nerd-icons))
+(custom-set-faces
+ '(mode-line ((t (:background "#1e2124" :foreground "#d3d7dc"))))
+ '(mode-line-inactive ((t (:background "#16181a" :foreground "#5c6370")))))
 
-(use-package centaur-tabs
-  :demand t
-  :config
-  (centaur-tabs-mode t)
-  (setq centaur-tabs-style "bar"
-        centaur-tabs-height 32
-        centaur-tabs-set-icons t
-        centaur-tabs-gray-out-icons 'buffer
-        centaur-tabs-set-bar 'left
-        centaur-tabs-set-modified-marker t
-        centaur-tabs-modified-marker "•"
-        centaur-tabs-cycle-scope 'tabs)
-  (centaur-tabs-headline-match)
-  (defun my-hide-internal-tabs (buffer)
-    (let ((name (string-trim (format "%s" buffer))))
-      (or (string-prefix-p "*" name)
-          (string-prefix-p "magit" name))))
-  (setq centaur-tabs-hide-tab-function 'my-hide-internal-tabs)
-  :bind
-  ("C-<prior>" . centaur-tabs-backward)
-  ("C-<next>" . centaur-tabs-forward)
-  ("C-c t s" . centaur-tabs-counsel-switch-group))
+(use-package solaire-mode
+  :config (solaire-global-mode +1))
+
+(use-package nyan-mode
+  :config (nyan-mode 1))
+
+(use-package beacon
+  :config (beacon-mode 1))
+
+(use-package breadcrumb
+  :config (breadcrumb-mode 1))
+
+(use-package symbols-outline
+  :bind ("C-c s" . symbols-outline-show))
+
+(use-package origami
+  :hook (prog-mode . origami-mode)
+  :init
+  ;; Pre-define the face to prevent the Emacs 30 daemon crash
+  (defface origami-fold-header-face
+    '((t (:box (:line-width 1 :color "#5c6370"))))
+    "Face used to display fold headers."
+    :group 'origami))
+
+(use-package minions
+  :config (minions-mode 1))
+
+(use-package mixed-pitch
+  :hook ((org-mode . mixed-pitch-mode)
+         (markdown-mode . mixed-pitch-mode)))
 
 (use-package minimap
-  :bind ("C-c m" . minimap-mode)
+  :bind ("C-c M-m" . minimap-mode)
   :custom
   (minimap-window-location 'right)
   (minimap-update-delay 0.2)
@@ -273,12 +253,14 @@
   (evil-global-set-key 'motion "j" 'evil-next-visual-line)
   (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
   (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal))
+  (evil-set-initial-state 'dashboard-mode 'normal)
+  (evil-set-initial-state 'ement-room-mode 'normal)
+  (evil-set-initial-state 'elfeed-search-mode 'normal))
 
 (use-package evil-collection
   :after evil
   :config
-  (setq evil-collection-mode-list '(dashboard dired ibuffer magit vterm corfu vertico prodigy))
+  (setq evil-collection-mode-list '(dashboard dired ibuffer magit vterm corfu vertico prodigy mu4e elfeed ement))
   (evil-collection-init))
 
 (use-package evil-surround
@@ -323,7 +305,7 @@
   :config (global-evil-mc-mode 1))
 
 (use-package undo-tree
-  :init
+  :config
   (global-undo-tree-mode 1)
   :custom
   (undo-tree-history-directory-alist `(("." . ,my-undo-dir)))
@@ -333,11 +315,11 @@
   (undo-tree-auto-save-history t))
 
 ;; =============================================================================
-;; 4. COMPLETION, SEARCH, NAVIGATION (THE OS SEARCH ENGINE)
+;; 4. COMPLETION, SEARCH, NAVIGATION, & LINTING (THE OS SEARCH ENGINE)
 ;; =============================================================================
 
 (use-package vertico
-  :init (vertico-mode 1)
+  :config (vertico-mode 1)
   :custom
   (vertico-scroll-margin 0)
   (vertico-count 20)
@@ -352,7 +334,7 @@
 
 (use-package marginalia
   :after vertico
-  :init (marginalia-mode 1)
+  :config (marginalia-mode 1)
   :custom
   (marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil)))
 
@@ -363,7 +345,7 @@
   (completion-category-overrides '((file (styles partial-completion)))))
 
 (use-package corfu
-  :init (global-corfu-mode 1)
+  :config (global-corfu-mode 1)
   :custom
   (corfu-auto t)
   (corfu-auto-delay 0.1)
@@ -400,36 +382,11 @@
 
 (use-package consult
   :bind (("C-c h" . consult-history)
-         ("C-c m" . consult-mode-command)
-         ("C-c k" . consult-kmacro)
-         ("C-x M-:" . consult-complex-command)
          ("C-x b" . consult-buffer)
-         ("C-x 4 b" . consult-buffer-other-window)
-         ("C-x 5 b" . consult-buffer-other-frame)
-         ("C-x r b" . consult-bookmark)
-         ("C-x p b" . consult-project-buffer)
          ("M-y" . consult-yank-pop)
-         ("<help> a" . consult-apropos)
-         ("M-g e" . consult-compile-error)
-         ("M-g f" . consult-flycheck)
-         ("M-g g" . consult-goto-line)
-         ("M-g M-g" . consult-goto-line)
-         ("M-g o" . consult-outline)
-         ("M-g m" . consult-mark)
-         ("M-g k" . consult-global-mark)
          ("M-g i" . consult-imenu)
-         ("M-g I" . consult-imenu-multi)
-         ("M-s d" . consult-find)
-         ("M-s D" . consult-locate)
-         ("M-s g" . consult-grep)
-         ("M-s G" . consult-git-grep)
          ("M-s r" . consult-ripgrep)
-         ("M-s l" . consult-line)
-         ("M-s L" . consult-line-multi)
-         ("M-s m" . consult-multi-occur)
-         ("M-s k" . consult-keep-lines)
-         ("M-s u" . consult-focus-lines)
-         ("M-s e" . consult-isearch-history))
+         ("M-s l" . consult-line))
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :init
   (setq register-preview-delay 0.5
@@ -438,20 +395,12 @@
   (setq xref-show-xrefs-function #'consult-xref
         xref-show-definitions-function #'consult-xref)
   :config
-  (consult-customize
-   consult-theme :preview-key '(:debounce 0.2 any)
-   consult-ripgrep consult-git-grep consult-grep
-   consult-bookmark consult-recent-file consult-xref
-   consult--source-bookmark consult--source-file-register
-   consult--source-recent-file consult--source-project-recent-file
-   :preview-key '(:debounce 0.4 any))
   (setq consult-narrow-key "<"))
 
 (use-package consult-dir
   :bind (("C-x C-d" . consult-dir)
          :map vertico-map
-         ("C-x C-d" . consult-dir)
-         ("C-x C-j" . consult-dir-jump-file)))
+         ("C-x C-d" . consult-dir)))
 
 (use-package embark
   :bind
@@ -459,12 +408,7 @@
    ("C-;" . embark-dwim)
    ("C-h B" . embark-bindings))
   :init
-  (setq prefix-help-command #'embark-prefix-help-command)
-  :config
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none)))))
+  (setq prefix-help-command #'embark-prefix-help-command))
 
 (use-package embark-consult
   :hook
@@ -473,14 +417,37 @@
 (use-package avy
   :bind
   (("C-:" . avy-goto-char)
-   ("C-'" . avy-goto-char-2)
-   ("M-g f" . avy-goto-line)
-   ("M-g w" . avy-goto-word-1)
-   ("M-g e" . avy-goto-word-0))
+   ("C-'" . avy-goto-char-2))
   :config
   (setq avy-background t
         avy-all-windows t
         avy-timeout-seconds 0.3))
+
+(use-package ace-window
+  :bind ("M-o" . ace-window)
+  :custom
+  (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+
+(use-package wgrep
+  :custom (wgrep-auto-save-buffer t))
+
+(use-package imenu-list
+  :bind ("C-c i l" . imenu-list-smart-toggle))
+
+(use-package flycheck
+  :config (global-flycheck-mode 1)
+  :custom
+  (flycheck-display-errors-delay 0.3)
+  (flycheck-indication-mode 'right-fringe))
+
+(use-package consult-flycheck
+  :bind ("M-g f" . consult-flycheck))
+
+(use-package consult-eglot
+  :bind ("M-g e" . consult-eglot))
+
+(use-package smart-jump
+  :config (smart-jump-setup-default-registers))
 
 (use-package which-key
   :init (which-key-mode)
@@ -504,7 +471,7 @@
 ;; =============================================================================
 
 (use-package projectile
-  :init
+  :config
   (projectile-mode +1)
   :bind-keymap
   ("C-c p" . projectile-command-map)
@@ -522,8 +489,15 @@
   ("C-c p p" . consult-projectile)
   ("C-c p f" . consult-projectile-find-file)
   ("C-c p d" . consult-projectile-find-dir)
-  ("C-c p b" . consult-projectile-switch-to-buffer)
-  ("C-c p r" . consult-projectile-recentf))
+  ("C-c p b" . consult-projectile-switch-to-buffer))
+
+(use-package ibuffer-projectile
+  :hook (ibuffer . (lambda ()
+                     (ibuffer-projectile-set-filter-groups)
+                     (unless (eq ibuffer-sorting-mode 'alphabetic)
+                       (ibuffer-do-sort-by-alphabetic)))))
+
+(use-package projectile-ripgrep)
 
 (use-package treemacs
   :bind ("<f8>" . treemacs)
@@ -597,6 +571,9 @@
 (use-package window-numbering
   :config (window-numbering-mode t))
 
+(use-package switch-window
+  :bind ("C-x o" . switch-window))
+
 (use-package persp-mode
   :custom
   (persp-keymap-prefix (kbd "C-c w"))
@@ -637,7 +614,7 @@
   (lsp-modeline-diagnostics-enable t)
   (lsp-modeline-workspace-status-enable t)
   (lsp-signature-auto-activate nil)
-  (lsp-diagnostics-provider :flymake)
+  (lsp-diagnostics-provider :flycheck)
   :hook ((prog-mode . (lambda ()
                         (unless (derived-mode-p 'emacs-lisp-mode 'lisp-data-mode)
                           (lsp-deferred))))
@@ -699,6 +676,9 @@
   (setf (alist-get 'bash-ts-mode apheleia-mode-alist) 'shfmt)
   (setf (alist-get 'sh-mode apheleia-mode-alist) 'shfmt))
 
+(use-package format-all
+  :commands format-all-buffer)
+
 (use-package smartparens
   :hook (prog-mode . smartparens-mode)
   :config
@@ -712,7 +692,16 @@
 
 (use-package ws-butler
   :hook ((prog-mode . ws-butler-mode)
-         (text-mode . ws-butler-mode)))
+          (text-mode . ws-butler-mode)))
+
+(use-package aggressive-indent
+  :hook (emacs-lisp-mode . aggressive-indent-mode))
+
+(use-package crux
+  :bind (("C-c o" . crux-open-with)
+         ("C-a" . crux-move-beginning-of-line)
+         ("C-c d" . crux-duplicate-current-line-or-region)
+         ("C-c M-d" . crux-duplicate-and-comment-current-line-or-region)))
 
 (use-package super-save
   :config
@@ -754,11 +743,26 @@
                  (window-height . 0.3))))
 
 (use-package envrc
-  :init (envrc-global-mode))
+  :config (envrc-global-mode))
 
 (use-package direnv
   :config
   (direnv-mode))
+
+(use-package popper
+  :bind (("C-`"   . popper-toggle)
+         ("M-`"   . popper-cycle)
+         ("C-M-`" . popper-toggle-type))
+  :custom
+  (popper-reference-buffers
+   '("\\*Messages\\*"
+     "Output\\*$"
+     "\\*Async Shell Command\\*"
+     help-mode
+     compilation-mode))
+  :config
+  (popper-mode +1)
+  (popper-echo-mode +1))
 
 (use-package docker
   :bind ("C-c d" . docker)
@@ -774,6 +778,9 @@
   :commands (kubernetes-overview)
   :custom
   (kubernetes-poll-frequency 10))
+
+(use-package verb
+  :hook (org-mode . verb-mode))
 
 (use-package restclient
   :mode ("\\.http\\'" . restclient-mode)
@@ -797,9 +804,12 @@
   :bind ("C-h z" . zeal-at-point))
 
 (use-package yasnippet
-  :init (yas-global-mode 1)
+  :config (yas-global-mode 1)
   :custom
-  (yas-snippet-dirs '("~/.emacs.d/snippets")))
+  (yas-snippet-dirs (list (locate-user-emacs-file "snippets/")))
+  :config
+  (unless (file-exists-p (car yas-snippet-dirs))
+    (make-directory (car yas-snippet-dirs) t)))
 
 (use-package yasnippet-snippets)
 
@@ -815,6 +825,9 @@
   :commands ejc-sql-mode
   :custom
   (ejc-result-table-impl 'orgtbl-mode))
+
+(use-package edbi
+  :commands edbi:open-db-viewer)
 
 ;; =============================================================================
 ;; 9. MAJOR LANGUAGE MODES (EDITING ENVIRONMENTS)
@@ -833,6 +846,9 @@
 
 (use-package yaml-mode
   :mode "\\.ya?ml\\'")
+
+(use-package k8s-mode
+  :hook (k8s-mode . yas-minor-mode))
 
 (use-package markdown-mode
   :mode "\\.md\\'"
@@ -857,6 +873,22 @@
   :custom
   (typescript-indent-level 2))
 
+(use-package emmet-mode
+  :hook ((html-mode . emmet-mode)
+         (css-mode . emmet-mode)))
+         
+(use-package elixir-mode 
+  :mode "\\.exs?\\'")
+  
+(use-package terraform-mode 
+  :mode "\\.tf\\'")
+
+(use-package dockerfile-mode
+  :mode "Dockerfile\\'")
+
+(use-package just-mode
+  :mode "\\Justfile\\'")
+
 ;; =============================================================================
 ;; 10. ORG MODE & ROAM (THE OS DESKTOP & KNOWLEDGE GRAPH)
 ;; =============================================================================
@@ -880,16 +912,22 @@
   (org-src-window-setup 'current-window)
   (org-confirm-babel-evaluate nil)
   :config
+  (unless (file-exists-p org-directory)
+    (make-directory org-directory t))
+
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
      (python . t)
-     (sh . t)
+     (shell . t)
      (lua . t)
      (sql . t)))
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•")))))))
+
+(use-package org-super-agenda
+  :hook (org-agenda-mode . org-super-agenda-mode))
 
 (use-package org-roam
   :custom
@@ -917,12 +955,87 @@
   (org-roam-ui-update-on-save t)
   (org-roam-ui-open-on-start t))
 
+(use-package calfw
+  :commands cfw:open-calendar-buffer)
+
+(use-package calfw-org)
+
+(use-package pdf-tools
+  :mode ("\\.pdf\\'" . pdf-view-mode)
+  :config
+  (pdf-tools-install t))
+
 ;; =============================================================================
-;; 11. GIT INTEGRATION (THE OS VERSION CONTROL)
+;; 11. EMACS OS APPLICATIONS (NEW: MAIL, CHAT, MEDIA, RSS)
+;; =============================================================================
+
+;; Email Client
+(use-package mu4e
+  :ensure nil
+  :bind ("C-c m m" . mu4e)
+  :custom
+  (mu4e-update-interval (* 10 60))
+  (mu4e-get-mail-command "mbsync -a")
+  (mu4e-attachment-dir  "~/Downloads")
+  (mu4e-view-show-images t)
+  (mu4e-view-show-addresses t)
+  :config
+  (setq sendmail-program "msmtp"
+        message-send-mail-function 'message-send-mail-with-sendmail
+        message-sendmail-f-is-evil t))
+
+(use-package mu4e-alert
+  :after mu4e
+  :config
+  (mu4e-alert-set-default-style 'libnotify)
+  (mu4e-alert-enable-notifications)
+  (mu4e-alert-enable-mode-line-display))
+
+;; Matrix Client
+(use-package ement
+  :bind ("C-c m c" . ement-connect)
+  :custom
+  (ement-save-sessions t)
+  (ement-room-send-message-filter 'ement-room-send-org-filter))
+
+;; Music Player
+(use-package emms
+  :bind (("C-c m p" . emms)
+         ("C-c m n" . emms-next)
+         ("C-c m b" . emms-previous))
+  :config
+  (require 'emms-setup)
+  (emms-all)
+  (emms-default-players)
+  (setq emms-source-file-default-directory "~/Music/"))
+
+;; RSS Reader
+(use-package elfeed
+  :bind ("C-c m r" . elfeed)
+  :custom
+  (elfeed-search-filter "@1-week-ago +unread")
+  :config
+  (setq elfeed-feeds
+        '(("https://news.ycombinator.com/rss" tech hackernews)
+          ("https://planet.emacslife.com/atom.xml" emacs tech))))
+
+(use-package password-store
+  :commands (password-store-copy password-store-insert))
+
+(use-package transmission
+  :commands transmission)
+
+(use-package erc-hl-nicks
+  :after erc
+  :config
+  (add-to-list 'erc-modules 'hl-nicks))
+
+;; =============================================================================
+;; 12. GIT INTEGRATION (THE OS VERSION CONTROL)
 ;; =============================================================================
 
 (use-package magit
-  :bind ("C-c g" . magit-status)
+  :bind ("C-c g g" . magit-status)
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   (magit-save-repository-buffers 'dontask)
@@ -951,6 +1064,19 @@
      ("GOTCHA" . "#dca3a3")
      ("STUB"   . "#7cb8bb"))))
 
+(use-package blamer
+  :bind (("s-i" . blamer-show-commit-info))
+  :custom
+  (blamer-idle-time 0.3)
+  (blamer-min-offset 70)
+  :custom-face
+  (blamer-face ((t :foreground "#7a88cf"
+                    :background nil
+                    :height 140
+                    :italic t)))
+  :config
+  (global-blamer-mode 1))
+
 (use-package git-timemachine
   :bind ("C-c g t" . git-timemachine))
 
@@ -971,14 +1097,13 @@
   :commands (diffview-current diffview-region diffview-message))
 
 ;; =============================================================================
-;; 12. KEYBINDINGS, MACROS & DAEMON STARTUP
+;; 13. KEYBINDINGS, MACROS & DAEMON STARTUP
 ;; =============================================================================
 
 (global-set-key (kbd "C-s") 'save-buffer)
-(global-set-key (kbd "C-c g") 'magit-status)
 (global-set-key (kbd "C-c e") 'treemacs)
 (global-set-key (kbd "C-c t") 'vterm)
-(global-set-key (kbd "C-c d") 'dashboard-open)
+(global-set-key (kbd "C-c d") (lambda () (interactive) (switch-to-buffer "*dashboard*")))
 (global-set-key (kbd "C-S-c") 'kill-ring-save)
 (global-set-key (kbd "C-S-v") 'yank)
 
@@ -990,14 +1115,37 @@
 (global-set-key (kbd "C-c w s") 'split-window-below)
 (global-set-key (kbd "C-c w v") 'split-window-right)
 
+;; Explicitly clear any existing binding for C-c m
+(global-unset-key (kbd "C-c m"))
+
+;; Create a dedicated prefix map for your applications
+(define-prefix-command 'my-apps-map)
+(global-set-key (kbd "C-c m") 'my-apps-map)
+
+;; Assign your apps to the new prefix
+(define-key my-apps-map (kbd "m") 'mu4e)               ; C-c m m
+(define-key my-apps-map (kbd "e") 'mu4e-compose-new)   ; C-c m e
+(define-key my-apps-map (kbd "p") 'emms)               ; C-c m p
+(define-key my-apps-map (kbd "c") 'ement-connect)      ; C-c m c
+(define-key my-apps-map (kbd "r") 'elfeed)             ; C-c m r
+
+;; Ensure Dashboard is aggressively enforced on start
 (setq initial-buffer-choice (lambda ()
                               (dashboard-refresh-buffer)
                               (get-buffer "*dashboard*")))
 
 (add-hook 'server-after-make-frame-hook
           (lambda ()
-            (dashboard-refresh-buffer)
-            (switch-to-buffer "*dashboard*")))
+          (set-face-attribute 'default nil :family "Iosevka Nerd Font" :height 100 :weight 'normal)
+          (set-face-attribute 'fixed-pitch nil :family "Iosevka Nerd Font" :height 100)
+          (set-face-attribute 'variable-pitch nil :family "Iosevka Nerd Font" :height 110 :weight 'regular)
+          (set-fontset-font t 'symbol (font-spec :family "Symbols Nerd Font Mono") nil 'append)
+            (custom-set-faces
+             '(mode-line ((t (:background "#1e2124" :foreground "#d3d7dc"))))
+             '(mode-line-inactive ((t (:background "#16181a" :foreground "#5c6370")))))
+            (unless (get-buffer-window "*dashboard*")
+              (dashboard-refresh-buffer)
+              (switch-to-buffer "*dashboard*"))))
 
 (provide 'init)
 ;;; init.el ends here

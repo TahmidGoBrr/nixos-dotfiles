@@ -13,7 +13,6 @@
       configFile = {
         "hypr/hyprland.lua".source = ./hypr/hyprland.lua;
         "hypr/hyprpaper.conf".source = ./hypr/hyprpaper.conf;
-        "wezterm".source = ./wezterm;
         "waybar".source = ./waybar;
         "rofi".source = ./rofi;
 

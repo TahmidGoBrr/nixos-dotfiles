@@ -25,5 +25,6 @@
       vlc # Audio & Video player
       fastfetch # Fetch
     ];
+    xdg.configFile."wezterm".source = ./wezterm;
   };
 }
