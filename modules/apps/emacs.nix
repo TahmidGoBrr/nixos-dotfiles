@@ -65,11 +65,8 @@
         minions
         beacon
         page-break-lines
-        spacious-padding
         indent-bars
-        solaire-mode
         mixed-pitch
-        nyan-mode
         minimap
 
         # Completion & Navigation

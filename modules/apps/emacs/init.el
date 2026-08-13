@@ -25,6 +25,20 @@
 
 (setq-default tab-width 2
               indent-tabs-mode nil
+              standard-indent 2)
+
+(setq-default c-basic-offset 2
+              js-indent-level 2
+              typescript-indent-level 2
+              css-indent-offset 2
+              web-mode-markup-indent-offset 2
+              web-mode-css-indent-offset 2
+              web-mode-code-indent-offset 2
+              python-indent-offset 2
+              nix-indent-function 'nix-indent-line)
+
+(setq-default tab-width 2
+              indent-tabs-mode nil
               word-wrap nil
               fill-column 80
               sentence-end-double-space nil
@@ -118,13 +132,13 @@
   (load-theme 'doom-one t)
   (require 'doom-themes-ext-org)
   (doom-themes-org-config))
-  ;; Note: You can append your manual hex overrides right after this block 
-  ;; using `custom-set-faces` or the doom-themes API as you had it before.
+;; Note: You can append your manual hex overrides right after this block
+;; using `custom-set-faces` or the doom-themes API as you had it before.
 
 (use-package doom-modeline
   :config (doom-modeline-mode 1)
   :custom
-  (doom-modeline-height 35)
+  (doom-modeline-height 25)
   (doom-modeline-bar-width 4)
   (doom-modeline-icon t)
   (doom-modeline-major-mode-icon t)
@@ -134,12 +148,6 @@
 (custom-set-faces
  '(mode-line ((t (:background "#1e2124" :foreground "#d3d7dc"))))
  '(mode-line-inactive ((t (:background "#16181a" :foreground "#5c6370")))))
-
-(use-package solaire-mode
-  :config (solaire-global-mode +1))
-
-(use-package nyan-mode
-  :config (nyan-mode 1))
 
 (use-package beacon
   :config (beacon-mode 1))
@@ -214,17 +222,6 @@
   (indent-bars-pad-frac 0.1)
   (indent-bars-zigzag nil)
   (indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)))
-
-(use-package spacious-padding
-  :hook (after-init . spacious-padding-mode)
-  :custom
-  (spacious-padding-widths
-   '( :internal-border-width 15
-      :header-line-width 4
-      :mode-line-width 6
-      :tab-width 4
-      :right-divider-width 1
-      :scroll-bar-width 8)))
 
 (use-package page-break-lines
   :hook (after-init . global-page-break-lines-mode))
@@ -605,7 +602,7 @@
   (lsp-eldoc-render-all nil)
   (lsp-enable-symbol-highlighting t)
   (lsp-warn-no-matched-clients nil)
-  (lsp-completion-provider :none)
+  (lsp-completion-provider :capf)
   (lsp-enable-snippet t)
   (lsp-file-watch-threshold 1500)
   (lsp-restart 'auto-restart)
@@ -615,9 +612,9 @@
   (lsp-modeline-workspace-status-enable t)
   (lsp-signature-auto-activate nil)
   (lsp-diagnostics-provider :flycheck)
-  :hook ((prog-mode . (lambda ()
-                        (unless (derived-mode-p 'emacs-lisp-mode 'lisp-data-mode)
-                          (lsp-deferred))))
+  (lsp-enable-indentation nil)
+  (lsp-enable-on-type-formatting nil)
+  :hook ((prog-mode . lsp-deferred)
          (lsp-mode . lsp-enable-which-key-integration)))
 
 (use-package lsp-ui
@@ -654,6 +651,7 @@
 
 (use-package apheleia
   :config
+  (setq apheleia-log-only-errors t)
   (apheleia-global-mode +1)
   (setf (alist-get 'alejandra apheleia-formatters) '("alejandra" "-"))
   (setf (alist-get 'nix-mode apheleia-mode-alist) 'alejandra)
@@ -692,7 +690,7 @@
 
 (use-package ws-butler
   :hook ((prog-mode . ws-butler-mode)
-          (text-mode . ws-butler-mode)))
+         (text-mode . ws-butler-mode)))
 
 (use-package aggressive-indent
   :hook (emacs-lisp-mode . aggressive-indent-mode))
@@ -790,12 +788,12 @@
   :bind ("C-c y" . prodigy)
   :config
   (prodigy-define-service
-    :name "Example Daemon"
-    :command "npm"
-    :args '("run" "dev")
-    :cwd "~"
-    :tags '(node daemon)
-    :kill-signal 'sigkill))
+   :name "Example Daemon"
+   :command "npm"
+   :args '("run" "dev")
+   :cwd "~"
+   :tags '(node daemon)
+   :kill-signal 'sigkill))
 
 (use-package devdocs
   :bind ("C-h D" . devdocs-lookup))
@@ -876,11 +874,11 @@
 (use-package emmet-mode
   :hook ((html-mode . emmet-mode)
          (css-mode . emmet-mode)))
-         
-(use-package elixir-mode 
+
+(use-package elixir-mode
   :mode "\\.exs?\\'")
-  
-(use-package terraform-mode 
+
+(use-package terraform-mode
   :mode "\\.tf\\'")
 
 (use-package dockerfile-mode
@@ -1071,9 +1069,9 @@
   (blamer-min-offset 70)
   :custom-face
   (blamer-face ((t :foreground "#7a88cf"
-                    :background nil
-                    :height 140
-                    :italic t)))
+                   :background nil
+                   :height 140
+                   :italic t)))
   :config
   (global-blamer-mode 1))
 
@@ -1136,10 +1134,10 @@
 
 (add-hook 'server-after-make-frame-hook
           (lambda ()
-          (set-face-attribute 'default nil :family "Iosevka Nerd Font" :height 100 :weight 'normal)
-          (set-face-attribute 'fixed-pitch nil :family "Iosevka Nerd Font" :height 100)
-          (set-face-attribute 'variable-pitch nil :family "Iosevka Nerd Font" :height 110 :weight 'regular)
-          (set-fontset-font t 'symbol (font-spec :family "Symbols Nerd Font Mono") nil 'append)
+            (set-face-attribute 'default nil :family "Iosevka Nerd Font" :height 100 :weight 'normal)
+            (set-face-attribute 'fixed-pitch nil :family "Iosevka Nerd Font" :height 100)
+            (set-face-attribute 'variable-pitch nil :family "Iosevka Nerd Font" :height 110 :weight 'regular)
+            (set-fontset-font t 'symbol (font-spec :family "Symbols Nerd Font Mono") nil 'append)
             (custom-set-faces
              '(mode-line ((t (:background "#1e2124" :foreground "#d3d7dc"))))
              '(mode-line-inactive ((t (:background "#16181a" :foreground "#5c6370")))))
