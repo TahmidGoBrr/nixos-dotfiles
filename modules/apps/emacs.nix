@@ -250,17 +250,6 @@
     mpv # Required for EMMS music playback
   ];
 
-  # Emacs Daemon Desktop Entry
-  xdg.desktopEntries.emacs-client = {
-    name = "Emacs Client";
-    genericName = "Text Editor";
-    comment = "The GNU Emacs OS.";
-    exec = "emacsclient -c -a \"emacs\" %F";
-    icon = "emacs";
-    terminal = false;
-    categories = ["Development" "TextEditor"];
-  };
-
   xdg.desktopEntries.emacs = {
     name = "Emacs";
     noDisplay = true;

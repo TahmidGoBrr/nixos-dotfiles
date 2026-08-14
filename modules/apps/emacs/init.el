@@ -194,7 +194,7 @@
         dashboard-set-file-icons t
         dashboard-set-navigator t
         dashboard-set-init-info t
-        dashboard-banner-logo-title "Welcome to the Emacs Operating System."
+        dashboard-banner-logo-title "Welcome to GNU Emacs."
         dashboard-items '((recents  . 10)
                           (bookmarks . 5)
                           (projects . 5)
