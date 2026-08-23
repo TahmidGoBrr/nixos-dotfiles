@@ -10,8 +10,5 @@ result-*
 # Secret state / environment overrides (if any)
 .env
 
-# SKLauncher jar file
-modules/apps/SKLauncher/SKLauncher.jar
-
-# Hardware configuration
-hardware-configuration.nix
+# Hardware Config
+hosts/taichi/hardware-configuration.nix
