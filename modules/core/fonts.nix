@@ -9,6 +9,7 @@
     packages = with pkgs; [
       nerd-fonts.iosevka
       nerd-fonts.symbols-only
+      alegreya
       noto-fonts
       noto-fonts-cjk-sans
       noto-fonts-cjk-serif

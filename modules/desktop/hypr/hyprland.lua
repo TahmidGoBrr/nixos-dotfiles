@@ -123,7 +123,7 @@ hl.gesture({
 })
 
 hl.device({
-  name = "epic-mouse-v1",
+  name = "a4tech-usb-mouse",
   sensitivity = -0.5,
 })
 

@@ -4,25 +4,20 @@
   lib,
   ...
 }: {
-  # Enable the Emacs daemon and client
   services.emacs = {
     enable = true;
     client.enable = true;
     startWithUserSession = "graphical";
   };
 
-  # Override the systemd service timeout separately
-  systemd.user.services.emacs = {
-    Service.TimeoutStartSec = "120";
-  };
+  systemd.user.services.emacs.Service.TimeoutStartSec = "120";
 
-  # Core Emacs Program Configuration
   programs.emacs = {
     enable = true;
-    package = pkgs.emacs-pgtk; # Pure GTK for Wayland/Hyprland native performance
+    package = pkgs.emacs-pgtk;
     extraPackages = epkgs:
       with epkgs; [
-        # Core Extensions
+        # Core & Performance
         use-package
         general
         diminish
@@ -31,10 +26,10 @@
         f
         async
         ht
-        parsebib
         hydra
+        gcmh
 
-        # Evil Framework
+        # Evil Modal Ecosystem
         evil
         evil-collection
         evil-surround
@@ -52,10 +47,26 @@
         evil-mc
         evil-multiedit
 
-        # UI & Themes
+        # Editing Utilities
+        undo-tree
+        smartparens
+        aggressive-indent
+        expand-region
+        iedit
+        ws-butler
+        super-save
+        crux
+        string-inflection
+        multiple-cursors
+        avy
+        ace-window
+
+        # UI, Themes & Dashboards
         doom-themes
         doom-modeline
         dashboard
+        writeroom-mode
+        olivetti
         nerd-icons
         rainbow-delimiters
         highlight-indent-guides
@@ -67,24 +78,20 @@
         page-break-lines
         indent-bars
         mixed-pitch
-        minimap
 
-        # Completion & Navigation
+        # Completion, Search & Navigation
         vertico
         marginalia
         orderless
         corfu
-        company
         consult
         consult-dir
         embark
         embark-consult
-        avy
         which-key
         helpful
         imenu-list
         wgrep
-        ace-window
         flycheck
         consult-flycheck
         smart-jump
@@ -95,98 +102,63 @@
         yasnippet
         yasnippet-snippets
 
-        # LSP & Treesitter
+        # LSP, Treesitter, Formatting & Debugging
         lsp-mode
         lsp-ui
         treesit-auto
+        apheleia
+        dape
+        format-all
 
-        # Workspaces & Files
-        projectile
-        consult-projectile
-        bufler
-        treemacs
-        treemacs-evil
-        treemacs-nerd-icons
-        multiple-cursors
+        # File Management & Workspaces
         dired-sidebar
         dired-open
+        peep-dired
         eyebrowse
         window-numbering
         switch-window
         persp-mode
+        projectile
+        consult-projectile
         ibuffer-projectile
         projectile-ripgrep
+        treemacs
+        treemacs-evil
+        treemacs-nerd-icons
         treemacs-projectile
         treemacs-magit
-
-        # Terminal & Refactoring
-        vterm
-        vterm-toggle
-        project
-        apheleia
-        dape
-        undo-tree
         popper
-        smartparens
-        aggressive-indent
-        expand-region
-        iedit
-        ws-butler
-        super-save
-        emmet-mode
-        format-all
-        crux
-        string-inflection
 
-        # Languages
-        lua-mode
+        # Language Major Modes
         nix-mode
-        yaml-mode
-        markdown-mode
         rust-mode
         go-mode
-        typescript-mode
         elixir-mode
-        terraform-mode
+        csharp-mode
+        zig-mode
+        kotlin-mode
+        scala-mode
+        haskell-mode
+        python-mode
 
-        # Docs & Org OS Features
+        # Org Mode Infrastructure
         pdf-tools
-        devdocs
-        zeal-at-point
+        org
+        org-modern
         org-roam
         org-roam-ui
         org-super-agenda
-        calfw
-        calfw-org
 
-        # IDE Features
+        # DevOps, Containers & Terminal
         restclient
         verb
-        docker
-        dockerfile-mode
-        kubernetes
-        k8s-mode
         prodigy
-        vlf
-        nhexl-mode
-        crdt
         direnv
         envrc
-        ejc-sql
-        edbi
-        just-mode
+        vterm
+        vterm-toggle
 
-        # Emacs OS Apps (Email, Chat, Media, RSS, Passwords, Torrents)
-        ement
-        emms
-        elfeed
-        mu4e
-        mu4e-alert
-        password-store
-        transmission
-        erc-hl-nicks
-
-        # Git
+        # Git Integration (Maxxed Out)
         magit
         forge
         blamer
@@ -198,56 +170,49 @@
         magit-todos
         diffview
 
-        # Treesitter Grammars
+        # Tree-sitter Grammars
         (treesit-grammars.with-all-grammars)
       ];
   };
 
-  # Complete Developer System Binaries, Fonts & Formatters
   home.packages = with pkgs; [
-    nerd-fonts.iosevka
+    # Formatters & Linters
     alejandra
     black
-    prettier
     shfmt
-    beamPackages.elixir
-    clang-tools
-    cmake
-    fd
-    gcc
-    ghostscript
-    gnumake
-    gopls
-    jq
-    libvterm
-    lldb
-    nil
-    nodejs
-    poppler_gi
-    pyright
-    python3Packages.debugpy
-    ripgrep
-    rust-analyzer
-    sqlite
-    terraform-ls
-    typescript-language-server
-    unzip
-    vscode-langservers-extracted
-    zstd
-    direnv
-    docker
-    just
-    k9s
-    kubectl
-    mycli
-    pgcli
-    zeal
-    pass
+    rustfmt
 
-    # OS App Dependencies
-    mu # Required for mu4e email indexing
-    isync # Recommended for pulling IMAP email
-    mpv # Required for EMMS music playback
+    # Toolchains & CLI tools (providing built-in formatters)
+    clang-tools
+    go
+    elixir
+    zig
+
+    # System & Search Tools
+    fd
+    jq
+    ripgrep
+    sqlite
+    unzip
+    zstd
+    texliveFull
+    direnv
+    just
+    poppler_gi
+
+    # Language Servers (LSPs)
+    elixir-ls
+    zls
+    jdt-language-server
+    kotlin-language-server
+    sqls
+    vscode-langservers-extracted
+    csharp-ls
+    bash-language-server
+    nil
+    gopls
+    rust-analyzer
+    pyright
   ];
 
   xdg.desktopEntries.emacs = {
@@ -255,9 +220,7 @@
     noDisplay = true;
   };
 
-  # Symlink configuration files
   xdg.configFile = {
     "emacs/init.el".source = ./emacs/init.el;
-    "emacs/early-init.el".source = ./emacs/early-init.el;
   };
 }

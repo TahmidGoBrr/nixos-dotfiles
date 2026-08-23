@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   imports = [
-    #./nvf.nix
+    ./nvf.nix
     ./virt.nix
   ];
 
@@ -25,7 +25,17 @@
       btop # Task manager
       vlc # Audio & Video player
       fastfetch # Fetch
+      openjdk25 # For minecraft
+      steam-run # For minecraft also
     ];
     xdg.configFile."wezterm".source = ./wezterm;
+    xdg.desktopEntries.sklauncher = {
+      name = "SKlauncher";
+      comment = "Minecraft Launcher";
+      exec = "${pkgs.steam-run}/bin/steam-run ${pkgs.openjdk25}/bin/java -jar ${./SKLauncher/SKLauncher.jar}";
+      icon = "${./SKLauncher/mc.png}";
+      terminal = false;
+      categories = ["Game"];
+    };
   };
 }

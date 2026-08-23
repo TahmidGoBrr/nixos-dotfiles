@@ -20,14 +20,5 @@
       virt-manager
       kdePackages.kio-admin
     ];
-    xdg.desktopEntries.waydroid-ui = {
-      name = "Waydroid UI";
-      genericName = "Emulators";
-      comment = "Waydroid emulator for android";
-      exec = "waydroid show-full-ui";
-      icon = "waydroid";
-      terminal = false;
-      categories = ["Utility" "Emulator"];
-    };
   };
 }

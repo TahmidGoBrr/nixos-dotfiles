@@ -35,7 +35,7 @@ config.colors = {
 }
 
 -- Window Transparency & Layout
-config.window_background_opacity = 0.88
+config.window_background_opacity = 0.85
 config.window_padding = { left = 10, right = 10, top = 10, bottom = 10 }
 config.window_decorations = "NONE"
 config.enable_tab_bar = false
