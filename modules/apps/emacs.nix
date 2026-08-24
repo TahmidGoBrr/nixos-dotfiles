@@ -111,13 +111,10 @@
         format-all
 
         # File Management & Workspaces
-        dired-sidebar
         dired-open
         peep-dired
         eyebrowse
-        window-numbering
         switch-window
-        persp-mode
         projectile
         consult-projectile
         ibuffer-projectile
@@ -184,8 +181,9 @@
 
     # Toolchains & CLI tools (providing built-in formatters)
     clang-tools
+    gcc
     go
-    elixir
+    beamPackages.elixir
     zig
 
     # System & Search Tools

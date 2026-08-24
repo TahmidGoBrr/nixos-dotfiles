@@ -125,9 +125,10 @@
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
   (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
-  (load-theme 'doom-compline t)
-  (require 'doom-themes-ext-org)
-  (doom-themes-org-config))
+  (load-theme 'doom-badger t)
+  (with-eval-after-load 'org
+    (require 'doom-themes-ext-org)
+    (doom-themes-org-config)))
 
 (use-package doom-modeline
   :config (doom-modeline-mode 1)
@@ -137,6 +138,7 @@
   (doom-modeline-icon t)
   (doom-modeline-major-mode-icon t)
   (doom-modeline-major-mode-color-icon t)
+  (doom-modeline-window-number nil)
   (doom-modeline-buffer-file-name-style 'truncate-upto-project)
   (doom-modeline-icon-provider 'nerd-icons))
 
@@ -280,7 +282,10 @@
     "o"   '(:ignore t :which-key "open")
     "o t" '(vterm-toggle :which-key "terminal")
     "o e" '(treemacs :which-key "treemacs explorer")
-    "o d" '(dired-sidebar-toggle-sidebar :which-key "dired sidebar")
+
+    "d"   '(:ignore t :which-key "dired")
+    "d t" '(dired-jump :which-key "open dired in this window")
+    "d o" '(dired-jump-other-window :which-key "open dired in other window")
 
     "n"   '(:ignore t :which-key "notes/org")
     "n a" '(org-agenda :which-key "org agenda")
@@ -379,7 +384,7 @@
   (completion-category-overrides '((file (styles partial-completion)))))
 
 (use-package corfu
-  :init
+  :config
   (global-corfu-mode 1)
   (corfu-popupinfo-mode 1)
   (corfu-history-mode 1)
@@ -566,13 +571,6 @@
     "h" 'dired-up-directory
     "l" 'dired-find-file))
 
-(use-package dired-sidebar
-  :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
-  :custom
-  (dired-sidebar-theme 'nerd-icons)
-  (dired-sidebar-use-term-integration t)
-  (dired-sidebar-use-custom-font t))
-
 (use-package dired-open
   :config
   (setq dired-open-extensions '(("png" . "sxiv")
@@ -594,22 +592,6 @@
   :config
   (eyebrowse-mode t)
   (setq eyebrowse-new-workspace t))
-
-(use-package window-numbering
-  :config (window-numbering-mode t))
-
-(use-package switch-window
-  :bind ("C-x o" . switch-window))
-
-(use-package persp-mode
-  :custom
-  (persp-keymap-prefix (kbd "C-c w"))
-  (persp-nil-name "default")
-  (persp-set-last-persp-for-new-frames t)
-  (persp-keep-windows-selected t)
-  (persp-auto-resume-time -1)
-  :config
-  (persp-mode 1))
 
 ;; =============================================================================
 ;; 6. HIGH-PERFORMANCE LSP & TREE-SITTER ENGINE
@@ -761,6 +743,7 @@
 (use-package vterm-toggle
   :custom
   (vterm-toggle-fullscreen-p nil)
+  :config
   (add-to-list 'display-buffer-alist
                '((lambda (buffer-or-name _)
                    (let ((buffer (get-buffer buffer-or-name)))
@@ -865,10 +848,11 @@
 ;; =============================================================================
 
 (use-package org
+  :init
+  (setq org-directory "~/Org")
   :hook ((org-mode . variable-pitch-mode)
          (org-mode . visual-line-mode))
   :custom
-  (org-directory "~/Org")
   (org-default-notes-file (concat org-directory "/notes.org"))
   (org-agenda-files (list org-directory))
   (org-log-done 'time)
@@ -976,6 +960,7 @@
 ;; =============================================================================
 
 (use-package magit
+  :commands magit-status
   :custom
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   (magit-save-repository-buffers 'dontask)
@@ -1044,7 +1029,6 @@
           (lambda ()
             (set-face-attribute 'default nil :family "Iosevka Nerd Font" :height 100 :weight 'normal)
             (set-face-attribute 'fixed-pitch nil :family "Iosevka Nerd Font" :height 100)
-            (set-face-attribute 'variable-pitch nil :family "Iosevka Nerd Font" :height 110 :weight 'regular)
             (set-face-attribute 'variable-pitch nil :family "Alegreya" :height 125 :weight 'regular)
             (set-fontset-font t 'symbol (font-spec :family "Symbols Nerd Font Mono") nil 'append)
             (unless (get-buffer-window "*dashboard*")
