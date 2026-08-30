@@ -48,7 +48,7 @@
 
     # Transparency rule examples
     activeOpacity = 1.0;
-    inactiveOpacity = 1.0;
+    inactiveOpacity = 0.8;
 
     settings = {
       corner-radius = 0;

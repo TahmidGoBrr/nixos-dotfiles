@@ -52,13 +52,10 @@
         smartparens
         aggressive-indent
         expand-region
-        iedit
         ws-butler
         super-save
-        crux
         string-inflection
         multiple-cursors
-        avy
         ace-window
 
         # UI, Themes & Dashboards
@@ -68,6 +65,8 @@
         writeroom-mode
         olivetti
         nerd-icons
+        nerd-icons-completion
+        nerd-icons-dired
         rainbow-delimiters
         highlight-indent-guides
         breadcrumb
@@ -86,11 +85,8 @@
         corfu
         consult
         consult-dir
-        embark
-        embark-consult
         which-key
         helpful
-        imenu-list
         wgrep
         flycheck
         consult-flycheck
@@ -98,7 +94,6 @@
         cape
         prescient
         vertico-prescient
-        consult-eglot
         yasnippet
         yasnippet-snippets
 
@@ -124,7 +119,6 @@
         treemacs-nerd-icons
         treemacs-projectile
         treemacs-magit
-        popper
 
         # Language Major Modes
         nix-mode
@@ -146,7 +140,7 @@
         org-roam-ui
         org-super-agenda
 
-        # DevOps, Containers & Terminal
+        # Terminal, devenv and extras
         restclient
         verb
         prodigy
@@ -154,6 +148,10 @@
         envrc
         vterm
         vterm-toggle
+        eat
+        emms
+        elfeed
+        elfeed-org
 
         # Git Integration (Maxxed Out)
         magit
@@ -220,5 +218,7 @@
 
   xdg.configFile = {
     "emacs/init.el".source = ./emacs/init.el;
+    "emacs/early-init.el".source = ./emacs/early-init.el;
+    "emacs/elfeed.org".source = ./emacs/elfeed.org;
   };
 }

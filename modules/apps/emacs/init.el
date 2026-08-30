@@ -125,7 +125,7 @@
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t)
   (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
-  (load-theme 'doom-badger t)
+  (load-theme 'doom-wilmersdorf t)
   (with-eval-after-load 'org
     (require 'doom-themes-ext-org)
     (doom-themes-org-config)))
@@ -163,8 +163,25 @@
   :config (minions-mode 1))
 
 (use-package mixed-pitch
-  :hook ((org-mode . mixed-pitch-mode)
-         (markdown-mode . mixed-pitch-mode)))
+  :hook ((org-mode . mixed-pitch-mode))
+  :config
+  (dolist (face '(header-line
+                  breadcrumb-face
+                  breadcrumb-project-face
+                  breadcrumb-imenu-face
+                  org-block
+                  org-block-begin-line
+                  org-block-end-line
+                  org-code
+                  org-document-info-keyword
+                  org-meta-line
+                  org-modern-block-keyword
+                  org-modern-tag
+                  org-property-value
+                  org-special-keyword
+                  org-table
+                  org-verbatim))
+    (add-to-list 'mixed-pitch-fixed-pitch-faces face)))
 
 (use-package dashboard
   :config
@@ -235,7 +252,7 @@
 (use-package evil-collection
   :after evil
   :config
-  (setq evil-collection-mode-list '(dashboard dired ibuffer magit vterm vertico corfu))
+  (setq evil-collection-mode-list '(dashboard dired ibuffer magit vterm vertico))
   (evil-collection-init))
 
 (use-package general
@@ -248,19 +265,17 @@
     :global-prefix "C-SPC")
 
   (my-leader-def
-    "SPC" '(consult-select-space :which-key "find buffer/file")
     "."   '(consult-line :which-key "search buffer")
     ":"   '(execute-extended-command :which-key "M-x")
 
     "b"   '(:ignore t :which-key "buffer")
     "b b" '(consult-buffer :which-key "switch buffer")
-    "b k" '(kill-current-buffer :which-key "kill buffer")
+    "b k" '(kill-buffer :which-key "kill buffer")
     "b d" '(dashboard-refresh-buffer :which-key "open dashboard")
 
     "f"   '(:ignore t :which-key "file")
     "f f" '(find-file :which-key "find file")
     "f r" '(consult-recent-file :which-key "recent files")
-    "f s" '(save-buffer :which-key "save file")
 
     "p"   '(:ignore t :which-key "project")
     "p p" '(consult-projectile-switch-project :which-key "switch project")
@@ -269,10 +284,19 @@
 
     "c"   '(:ignore t :which-key "code")
     "c a" '(lsp-execute-code-action :which-key "code action")
+    "c c" '(evilnc-comment-or-uncomment-lines :which-key "comment or uncomment")
     "c d" '(lsp-find-definition :which-key "jump to definition")
-    "c r" '(lsp-rename :which-key "rename")
-    "c f" '(apheleia-format-buffer :which-key "format buffer")
     "c e" '(consult-flycheck :which-key "diagnostics")
+    "c f" '(apheleia-format-buffer :which-key "format buffer")
+    "c l" '(consult-line :which-key "go to line")
+    "c r" '(lsp-rename :which-key "rename")
+
+    "c i" '(:ignore t :which-key "apply casing")
+    "c i i" '(string-inflection-all-cycle :which-key "cycle through cases")
+    "c i c" '(string-inflection-camelcase :which-key "camelcase")
+    "c i k" '(string-inflection-kebab-case :which-key "kebabcase")
+    "c i s" '(string-inflection-snake-case :which-key "snakecase")
+    "c i s" '(string-inflection-snake-case :which-key "snakecase")
 
     "g"   '(:ignore t :which-key "git")
     "g g" '(magit-status :which-key "magit status")
@@ -280,15 +304,25 @@
     "g t" '(git-timemachine :which-key "git timemachine")
 
     "o"   '(:ignore t :which-key "open")
-    "o t" '(vterm-toggle :which-key "terminal")
     "o e" '(treemacs :which-key "treemacs explorer")
 
-    "d"   '(:ignore t :which-key "dired")
+    "o w" '(:ignore t :which-key "cool stuff")
+    "o w w" '(eww :which-key "open eww web")
+    "o w m" '(emms :which-key "open emms media player")
+    "o w n" '(elfeed :which-key "elfeed RSS")
+
+    "o t" '(:ignore t :which-key "terminal")
+    "o t v" '(vterm-toggle :which-key "vterm")
+    "o t e" '(eat :which-key "eat")
+
+    "d"   '(:ignore t :which-key "directories")
     "d t" '(dired-jump :which-key "open dired in this window")
     "d o" '(dired-jump-other-window :which-key "open dired in other window")
+    "d d" '(consult-dir :which-key "consult directory")
 
     "n"   '(:ignore t :which-key "notes/org")
     "n a" '(org-agenda :which-key "org agenda")
+    "n e" '(org-export-dispatch :which-key "org export")
     "n f" '(org-roam-node-find :which-key "find roam node")
     "n i" '(org-roam-node-insert :which-key "insert roam node")
     "n l" '(org-roam-buffer-toggle :which-key "toggle roam buffer")
@@ -300,7 +334,13 @@
     "w s" '(split-window-below :which-key "split horizontally")
     "w v" '(split-window-right :which-key "split vertically")
     "w e" '(treemacs-select-window :which-key "select treemacs window")
-    "w w" '(ace-window :which-key "switch window")))
+    "w w" '(ace-window :which-key "switch window")
+
+    "y" '(:ignore t :which-key "misc")
+    "y d" '(dape :which-key "dape")
+    "y e" '(er/expand-region :which-key "select all in function")
+    "y p" '(prodigy :which-key "prodigy")
+    "y y" '(consult-yank-pop :which-key "paste from clipboard")))
 
 (global-set-key (kbd "C-S-c") 'kill-ring-save)
 (global-set-key (kbd "C-S-v") 'yank)
@@ -308,8 +348,7 @@
 (use-package evil-surround
   :config (global-evil-surround-mode 1))
 
-(use-package evil-nerd-commenter
-  :bind ("M-/" . evilnc-comment-or-uncomment-lines))
+(use-package evil-nerd-commenter)
 
 (use-package evil-goggles
   :config
@@ -383,18 +422,28 @@
   (completion-category-defaults nil)
   (completion-category-overrides '((file (styles partial-completion)))))
 
+(use-package nerd-icons-completion
+  :after marginalia
+  :config
+  (nerd-icons-completion-mode)
+  :hook (marginalia-mode . nerd-icons-completion-marginalia-setup))
+
 (use-package corfu
+  :init
+  (setq corfu-auto t
+        corfu-auto-delay 0.05
+        corfu-auto-prefix 2
+        corfu-cycle t
+        corfu-preselect 'prompt
+        corfu-quit-no-match 'separator
+        tab-always-indent 'complete)
+  :hook
+  ((prog-mode . corfu-mode)
+   (text-mode . corfu-mode)
+   (corfu-mode . corfu-popupinfo-mode)
+   (corfu-mode . corfu-history-mode))
   :config
   (global-corfu-mode 1)
-  (corfu-popupinfo-mode 1)
-  (corfu-history-mode 1)
-  :custom
-  (corfu-auto t)
-  (corfu-auto-delay 0.05)
-  (corfu-auto-prefix 2)
-  (corfu-cycle t)
-  (corfu-preselect 'prompt)
-  (corfu-quit-no-match 'separator)
   :bind
   (:map corfu-map
         ("TAB" . corfu-next)
@@ -413,12 +462,6 @@
   (prog-mode . my/setup-cape-capfs))
 
 (use-package consult
-  :bind (("C-c h" . consult-history)
-         ("C-x b" . consult-buffer)
-         ("M-y" . consult-yank-pop)
-         ("M-g i" . consult-imenu)
-         ("M-s r" . consult-ripgrep)
-         ("M-s l" . consult-line))
   :hook (completion-list-mode . consult-preview-at-point-mode)
   :init
   (setq register-preview-delay 0.5
@@ -429,41 +472,14 @@
   :config
   (setq consult-narrow-key "<"))
 
-(use-package consult-dir
-  :bind (("C-x C-d" . consult-dir)
-         :map vertico-map
-         ("C-x C-d" . consult-dir)))
-
-(use-package embark
-  :bind
-  (("C-." . embark-act)
-   ("C-;" . embark-dwim)
-   ("C-h B" . embark-bindings))
-  :init
-  (setq prefix-help-command #'embark-prefix-help-command))
-
-(use-package embark-consult
-  :hook (embark-collect-mode . consult-preview-at-point-mode))
-
-(use-package avy
-  :bind
-  (("C-:" . avy-goto-char)
-   ("C-'" . avy-goto-char-2))
-  :config
-  (setq avy-background t
-        avy-all-windows t
-        avy-timeout-seconds 0.3))
+(use-package consult-dir)
 
 (use-package ace-window
-  :bind ("M-o" . ace-window)
   :custom
   (aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 
 (use-package wgrep
   :custom (wgrep-auto-save-buffer t))
-
-(use-package imenu-list
-  :bind ("C-c i l" . imenu-list-smart-toggle))
 
 (use-package flycheck
   :config (global-flycheck-mode 1)
@@ -471,11 +487,7 @@
   (flycheck-display-errors-delay 0.1)
   (flycheck-indication-mode 'right-fringe))
 
-(use-package consult-flycheck
-  :bind ("M-g f" . consult-flycheck))
-
-(use-package consult-eglot
-  :bind ("M-g e" . consult-eglot))
+(use-package consult-flycheck)
 
 (use-package smart-jump
   :config (smart-jump-setup-default-registers))
@@ -530,9 +542,8 @@
 (use-package projectile-ripgrep)
 
 (use-package treemacs
-  :bind ("<f8>" . treemacs)
   :custom
-  (treemacs-width 40)
+  (treemacs-width 35)
   (treemacs-is-never-other-window t)
   (treemacs-position 'right)
   (treemacs-silent-refresh t)
@@ -545,7 +556,8 @@
   (add-hook 'treemacs-mode-hook
             (lambda ()
               (text-scale-increase 1)
-              (setq header-line-format nil))))
+              (setq header-line-format nil)
+              (setq display-line-numbers nil))))
 
 (use-package treemacs-evil :after (treemacs evil))
 (use-package treemacs-projectile :after (treemacs projectile))
@@ -558,7 +570,6 @@
 (use-package dired
   :ensure nil
   :commands (dired dired-jump)
-  :bind (("C-x C-j" . dired-jump))
   :custom
   (dired-listing-switches "-agho --group-directories-first")
   (dired-dwim-target t)
@@ -582,11 +593,10 @@
   :bind (:map dired-mode-map
               ("P" . peep-dired))
   :config
-  (setq peep-dired-cleanup-on-disable t)
-  (define-key peep-dired-mode-map (kbd "C-n") 'peep-dired-next-file)
-  (define-key peep-dired-mode-map (kbd "C-p") 'peep-dired-prev-file)
-  (define-key peep-dired-mode-map (kbd "SPC") 'peep-dired-scroll-page-down)
-  (define-key peep-dired-mode-map (kbd "DEL") 'peep-dired-scroll-page-up))
+  (setq peep-dired-cleanup-on-disable t))
+
+(use-package nerd-icons-dired
+  :hook (dired-mode . nerd-icons-dired-mode))
 
 (use-package eyebrowse
   :config
@@ -645,7 +655,6 @@
   (lsp-ui-sideline-show-code-actions t))
 
 (use-package dape
-  :bind ("<f5>" . dape)
   :custom
   (dape-buffer-window-arrangement 'right)
   (dape-inlay-hints t)
@@ -698,11 +707,7 @@
   :hook (prog-mode . smartparens-mode)
   :config (require 'smartparens-config))
 
-(use-package expand-region
-  :bind ("C-=" . er/expand-region))
-
-(use-package iedit
-  :bind ("C-;" . iedit-mode))
+(use-package expand-region)
 
 (use-package ws-butler
   :hook ((prog-mode . ws-butler-mode)
@@ -711,26 +716,16 @@
 (use-package aggressive-indent
   :hook (emacs-lisp-mode . aggressive-indent-mode))
 
-(use-package crux
-  :bind (("C-c o" . crux-open-with)
-         ("C-a" . crux-move-beginning-of-line)
-         ("C-c d" . crux-duplicate-current-line-or-region)
-         ("C-c M-d" . crux-duplicate-and-comment-current-line-or-region)))
-
 (use-package super-save
   :config
   (super-save-mode +1)
   (setq super-save-auto-save-when-idle t
         super-save-idle-duration 3))
 
-(use-package string-inflection
-  :bind (("C-c i i" . string-inflection-all-cycle)
-         ("C-c i c" . string-inflection-camelcase)
-         ("C-c i k" . string-inflection-kebab-case)
-         ("C-c i s" . string-inflection-snake-case)))
+(use-package string-inflection)
 
 ;; =============================================================================
-;; 8. TERMINAL & DEV ENVIRONMENT SUBSYSTEMS
+;; 8. TERMINAL & ENVIRONMENT
 ;; =============================================================================
 
 (use-package vterm
@@ -738,7 +733,13 @@
   :custom
   (vterm-max-scrollback 100000)
   (vterm-kill-buffer-on-exit t)
-  (vterm-timer-delay 0.01))
+  (vterm-timer-delay 0.01)
+  :config
+  (add-hook 'vterm-mode-hook
+            (lambda ()
+              (setq display-line-numbers nil)
+              (when-let ((proc (get-buffer-process (current-buffer))))
+                (set-process-query-on-exit-flag proc nil)))))
 
 (use-package vterm-toggle
   :custom
@@ -754,6 +755,28 @@
                  (reusable-frames . visible)
                  (window-height . 0.3))))
 
+(use-package eat
+  :commands eat
+  :custom
+  (eat-kill-buffer-on-exit t)
+  (eat-buffer-maximum-size 100000)
+  :config
+  (add-to-list 'display-buffer-alist
+               '((lambda (buffer-or-name _)
+                   (let ((buffer (get-buffer buffer-or-name)))
+                     (with-current-buffer buffer
+                       (derived-mode-p 'eat-mode))))
+                 (display-buffer-reuse-window display-buffer-at-bottom)
+                 (reusable-frames . visible)
+                 (window-height . 0.3)))
+  (with-eval-after-load 'evil
+    (evil-set-initial-state 'eat-mode 'insert))
+  (add-hook 'eat-mode-hook
+            (lambda ()
+              (setq display-line-numbers nil)
+              (when-let ((proc (get-buffer-process (current-buffer))))
+                (set-process-query-on-exit-flag proc nil)))))
+
 (use-package envrc
   :hook (after-init . envrc-global-mode)
   :config
@@ -763,21 +786,6 @@
   :config
   (direnv-mode 1))
 
-(use-package popper
-  :bind (("C-`"   . popper-toggle)
-         ("M-`"   . popper-cycle)
-         ("C-M-`" . popper-toggle-type))
-  :custom
-  (popper-reference-buffers
-   '("\\*Messages\\*"
-     "Output\\*$"
-     "\\*Async Shell Command\\*"
-     help-mode
-     compilation-mode))
-  :config
-  (popper-mode +1)
-  (popper-echo-mode +1))
-
 (use-package verb
   :hook (org-mode . verb-mode))
 
@@ -785,8 +793,7 @@
   :mode ("\\.http\\'" . restclient-mode)
   :hook (restclient-mode . display-line-numbers-mode))
 
-(use-package prodigy
-  :bind ("C-c y" . prodigy))
+(use-package prodigy)
 
 (use-package yasnippet
   :config (yas-global-mode 1)
@@ -797,6 +804,50 @@
     (make-directory (car yas-snippet-dirs) t)))
 
 (use-package yasnippet-snippets)
+
+(use-package eww
+  :defer t
+  :custom
+  (eww-search-prefix "https://duckduckgo.com/html/?q=")
+  (eww-auto-rename-buffer t)
+  (shr-use-colors nil)
+  (shr-use-fonts t)
+  (shr-max-image-proportion 0.6)
+  :hook
+  (eww-mode . (lambda ()
+                (setq display-line-numbers nil)
+                (visual-line-mode 1))))
+
+(use-package emms
+  :commands (emms emms-play-file emms-play-directory emms-playlist-mode-go)
+  :config
+  (require 'emms-setup)
+  (emms-all)
+  (emms-default-players)
+  :custom
+  (emms-source-file-default-directory "~/Music/")
+  (emms-playlist-default-major-mode 'emms-playlist-mode)
+  (emms-show-format "NP: %s")
+  :hook
+  (emms-playlist-mode . (lambda ()
+                          (setq display-line-numbers nil))))
+
+(use-package elfeed
+  :commands elfeed
+  :custom
+  (elfeed-db-directory (locate-user-emacs-file "elfeed/"))
+  (elfeed-search-filter "@1-month-ago +unread")
+  (elfeed-show-entry-switch 'display-buffer)
+  :hook
+  ((elfeed-search-mode elfeed-show-mode) . (lambda ()
+                                             (setq display-line-numbers nil))))
+
+(use-package elfeed-org
+  :after (elfeed org)
+  :config
+  (elfeed-org)
+  :custom
+  (rmh-elfeed-org-files (list (concat org-directory "/elfeed.org"))))
 
 ;; =============================================================================
 ;; 9. MAJOR PROGRAMMING LANGUAGE MODES
@@ -850,8 +901,7 @@
 (use-package org
   :init
   (setq org-directory "~/Org")
-  :hook ((org-mode . variable-pitch-mode)
-         (org-mode . visual-line-mode))
+  :hook ((org-mode . visual-line-mode))
   :custom
   (org-default-notes-file (concat org-directory "/notes.org"))
   (org-agenda-files (list org-directory))
@@ -876,13 +926,17 @@
    '(org-level-5 ((t (:inherit outline-5 :height 1.05 :weight medium)))))
   (custom-theme-set-faces
    'user
+   '(header-line ((t (:inherit fixed-pitch))))
    '(org-block ((t (:inherit fixed-pitch))))
+   '(org-block-begin-line ((t (:inherit fixed-pitch))))
+   '(org-block-end-line ((t (:inherit fixed-pitch))))
    '(org-code ((t (:inherit fixed-pitch))))
    '(org-table ((t (:inherit fixed-pitch))))
    '(org-verbatim ((t (:inherit fixed-pitch))))
    '(org-special-keyword ((t (:inherit fixed-pitch))))
    '(org-meta-line ((t (:inherit fixed-pitch))))
    '(org-checkbox ((t (:inherit fixed-pitch))))))
+
 
 (unless (file-exists-p org-directory)
   (make-directory org-directory t))
@@ -895,7 +949,6 @@
   :hook ((org-mode . org-modern-mode)
          (org-agenda-finalize . org-modern-agenda))
   :custom
-  (org-modern-star '("◉" "○" "✸" "✿" "✤"))
   (org-modern-table t)
   (org-modern-variable-pitch t)
   (org-modern-block-name '(" " . " "))
@@ -904,10 +957,17 @@
   (org-modern-statistics t)
   (org-modern-progress t)
   (org-modern-priority t)
+  (org-modern-star
+   '("◉" "○" "✸" "✿" "✤"))
   (org-modern-checkbox
    '((?X . "☑")
      (?- . "❍")
      (?\s . "☐")))
+  (org-modern-fold-stars
+   '(("▾" . "▸")
+     ("▾" . "▸")
+     ("▾" . "▸")
+     ("▾" . "▸")))
   (org-modern-horizontal-rule (make-string 36 ?─)))
 
 (use-package writeroom-mode
@@ -923,7 +983,8 @@
    (python . t)
    (shell . t)
    (lua . t)
-   (sql . t)))
+   (sql . t)
+   (nix . t)))
 
 (use-package org-super-agenda
   :hook (org-agenda-mode . org-super-agenda-mode))
@@ -952,6 +1013,7 @@
 
 (use-package pdf-tools
   :mode ("\\.pdf\\'" . pdf-view-mode)
+  :hook (pdf-view-mode . (lambda() (display-line-numbers-mode -1)))
   :config
   (pdf-tools-install t))
 
@@ -980,13 +1042,7 @@
   (diff-hl-flydiff-mode))
 
 (use-package hl-todo
-  :hook (prog-mode . hl-todo-mode)
-  :custom
-  (hl-todo-keyword-faces
-   '(("TODO"   . "#cc9393")
-     ("FIXME"  . "#cc9393")
-     ("DEBUG"  . "#dca3a3")
-     ("STUB"   . "#7cb8bb"))))
+  :hook (prog-mode . hl-todo-mode))
 
 (use-package blamer
   :bind (("s-i" . blamer-show-commit-info))
@@ -1032,7 +1088,7 @@
             (set-face-attribute 'variable-pitch nil :family "Alegreya" :height 125 :weight 'regular)
             (set-fontset-font t 'symbol (font-spec :family "Symbols Nerd Font Mono") nil 'append)
             (unless (get-buffer-window "*dashboard*")
-              (dashboard-refresh-buffer)
+              (dashboard-open)
               (switch-to-buffer "*dashboard*"))))
 
 (provide 'init)

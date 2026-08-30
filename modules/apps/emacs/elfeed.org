@@ -1,0 +1,8 @@
+* Feeds                                                              :elfeed:
+** Linux & Tech                                                       :tech:
+*** https://nixos.org/blog/rss-feed.xml                               :nix:
+*** https://archlinux.org/feeds/news/                                :arch:
+*** https://protesilaos.com/master.xml                               :emacs:
+
+** News & Blogs                                                       :blogs:
+*** https://news.ycombinator.com/rss                                  :hn:
